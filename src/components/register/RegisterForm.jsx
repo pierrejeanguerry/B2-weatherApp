@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import Field from "./Field";
+import FieldRegister from "./FieldRegister";
 export default function RegisterForm() {
   let [firstName, setFirstName] = useState("");
   let [lastName, setLastName] = useState("");
@@ -49,6 +49,7 @@ export default function RegisterForm() {
         first_name: firstName,
         second_name: lastName,
         password: password,
+        repeatPassword: repeatPassword,
       };
       const headers = {
         "Content-Type": "application/json",
@@ -65,19 +66,19 @@ export default function RegisterForm() {
         })
         .catch((error) => {
           console.log(error);
-          // if (error.response.data === "NOT_ALL_DATA") {
-          //   setPassIsWrong(!regexPassword.test(password));
-          //   setEmailIsWrong(!regexEmail.test(email));
-          //   setUserNameIsWrong(userName.length > 50);
-          //   setFirstNameIsWrong(firstName.length > 50);
-          //   setLastNameIsWrong(lastName.length > 50);
-          // }
-          // if (error.response.data === "PASSWORD_IS_NOT_EQUIVALENT") {
-          //   setRepeatPassIsWrong(true);
-          // }
-          // if (error.response.data === "INTERNAL_ERROR") {
-          //   setEmailUsed(true);
-          // }
+          if (error.response.data === "NOT_ALL_DATA") {
+            setPassIsWrong(!regexPassword.test(password));
+            setEmailIsWrong(!regexEmail.test(email));
+            setUserNameIsWrong(userName.length > 50);
+            setFirstNameIsWrong(firstName.length > 50);
+            setLastNameIsWrong(lastName.length > 50);
+          }
+          if (error.response.data === "PASSWORD_IS_NOT_EQUIVALENT") {
+            setRepeatPassIsWrong(true);
+          }
+          if (error.response.data === "INTERNAL_ERROR") {
+            setEmailUsed(true);
+          }
         });
     }
     event.preventDefault();
@@ -88,7 +89,7 @@ export default function RegisterForm() {
       onSubmit={handleSubmit}
       className="inscription-form w-2/5 m-24 flex flex-col"
     >
-      <Field
+      <FieldRegister
         type="text"
         name="userName"
         id="userName"
@@ -98,7 +99,7 @@ export default function RegisterForm() {
         boolean={userNameIsWrong}
         errorText="Nom d'utilisateur trop long"
       />
-      <Field
+      <FieldRegister
         type="text"
         name="firstName"
         id="firstName"
@@ -108,7 +109,7 @@ export default function RegisterForm() {
         boolean={firstNameIsWrong}
         errorText="Prénom trop long"
       />
-      <Field
+      <FieldRegister
         type="text"
         name="lastName"
         id="lastName"
@@ -121,7 +122,7 @@ export default function RegisterForm() {
       <p className="text-red-500 text-xs italic">
         {emailUsed ? "Cet email est deja utilisé" : <br />}
       </p>
-      <Field
+      <FieldRegister
         type="email"
         name="email"
         id="email"
@@ -132,7 +133,7 @@ export default function RegisterForm() {
         errorText="Entrez une adresse mail valide"
       />
 
-      <Field
+      <FieldRegister
         type="password"
         name="password"
         id="password"
@@ -142,7 +143,7 @@ export default function RegisterForm() {
         boolean={passIsWrong}
         errorText="Le mot de passe doit contenir au moins 1 chiffre, 1 minuscule, 1 majuscule, 1 caractère spécial (!?,.;/:*) et faire 10 caractères minimum"
       />
-      <Field
+      <FieldRegister
         type="password"
         name="repeatPassword"
         id="repeatPassword"

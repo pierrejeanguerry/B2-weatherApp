@@ -1,4 +1,4 @@
-export default function Field(props) {
+export default function FieldRegister(props) {
   function handleChange(event) {
     props.onChange(event.target.value);
   }
