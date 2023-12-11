@@ -57,11 +57,7 @@ export default function RegisterForm() {
     event.preventDefault();
   }
   return (
-    <form
-      method="post"
-      onSubmit={handleSubmit}
-      className="inscription-form w-2/5 m-24 flex flex-col"
-    >
+    <form method="post" onSubmit={handleSubmit}>
       <FieldRegister
         type="text"
         name="userName"
@@ -92,9 +88,6 @@ export default function RegisterForm() {
         boolean={false}
         errorText="Nom de famille trop long"
       />
-      <p className="text-red-500 text-xs italic">
-        {false ? "Cet email est deja utilisé" : <br />}
-      </p>
       <FieldRegister
         type="email"
         name="email"
@@ -126,13 +119,8 @@ export default function RegisterForm() {
         boolean={false}
         errorText="Les mots de passe doivent être similaires"
       />
-      <div className="flex items-center justify-between">
-        <button
-          className="bg-[#310046] hover:bg-[#470863] text-white font-bold w-full py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          type="submit"
-        >
-          Inscription
-        </button>
+      <div>
+        <button type="submit">Inscription</button>
       </div>
     </form>
   );

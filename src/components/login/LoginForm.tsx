@@ -28,7 +28,6 @@ export default function LoginForm() {
           alert("combinaison email + mot de passe fausse");
         }
         if (error.response?.status === 500) {
-          // probleme venant du serveur (réessayer plus tard)
           alert("probleme venant du serveur (réessayer plus tard)");
         }
       });

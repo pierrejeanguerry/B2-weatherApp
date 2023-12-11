@@ -1,12 +1,8 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
-import React, { useState } from "react";
 
 export default function AddStation() {
-  let [mac, setMac] = useState("");
-
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     const formData = new FormData(event.currentTarget);
-    const macAdress = formData.get("macAdress");
     const headers = {
       "Content-Type": "application/json",
       Authorization: localStorage.getItem("authorization"),
