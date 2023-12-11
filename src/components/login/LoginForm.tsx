@@ -2,9 +2,11 @@ import axios from "axios";
 import React from "react";
 
 export default function LoginForm() {
-  function handleSubmit(event) {
-    const email = event.target[0].value;
-    const password = event.target[1].value;
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    const formData = new FormData(event.currentTarget);
+    const email = formData.get("email");
+    const password = formData.get("password");
+
     var to_send = {
       email: email,
       password: password,
