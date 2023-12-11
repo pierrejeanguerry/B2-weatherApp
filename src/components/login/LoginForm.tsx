@@ -4,38 +4,42 @@ import React from "react";
 export default function LoginForm() {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     const formData = new FormData(event.currentTarget);
-    const email = formData.get("email");
-    const password = formData.get("password");
 
     var to_send = {
-      email: email,
-      password: password,
+      email: formData.get("login-email"),
+      password: formData.get("login-password"),
     };
     const headers = {
       "Content-Type": "application/json",
     };
-    console.log(email);
     axios
-      .post("http://localhost:3001/api/user/login-user", to_send, {
+      .post("http://localhost:3001/api/user/login", to_send, {
         headers,
       })
       .then((res) => {
-        console.log(res.headers);
         const token = res.headers["authorization"];
         localStorage.setItem("authorization", token);
+        alert("Success!");
         //faire changer de page ici
       })
       .catch((error) => {
         console.log(error);
+        if (error.response?.status === 400) {
+          alert("combinaison email + mot de passe fausse");
+        }
+        if (error.response?.status === 500) {
+          // probleme venant du serveur (réessayer plus tard)
+          alert("probleme venant du serveur (réessayer plus tard)");
+        }
       });
 
     event.preventDefault();
   }
   return (
     <form onSubmit={handleSubmit}>
-      <input type="email" name="email" id="email" />
+      <input type="email" name="login-email" id="login-email" />
       <br />
-      <input type="password" name="password" id="password" />
+      <input type="password" name="login-password" id="login-password" />
       <br />
 
       <button type="submit">Se sonnecter</button>

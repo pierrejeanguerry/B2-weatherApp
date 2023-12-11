@@ -12,41 +12,45 @@ export default function RegisterForm() {
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     const formData = new FormData(event.currentTarget);
-    const firstName = formData.get("firstName");
-    const lastName = formData.get("lastName");
-    const userName = formData.get("userName");
-    const email = formData.get("email");
-    const password = formData.get("password");
-    const repeatPassword = formData.get("repeatPassword");
 
     var to_send = {
-      username: userName,
-      email: email,
-      first_name: firstName,
-      second_name: lastName,
-      password: password,
-      repeatPassword: repeatPassword,
+      username: formData.get("userName"),
+      email: formData.get("email"),
+      first_name: formData.get("firstName"),
+      last_name: formData.get("lastName"),
+      password: formData.get("password"),
+      repeatPassword: formData.get("repeatPassword"),
     };
     const headers = {
       "Content-Type": "application/json",
     };
     axios
-      .post("http://localhost:3001/api/user/create-user", to_send, {
+      .post("http://localhost:3001/api/user/register", to_send, {
         headers,
       })
       .then((res: AxiosResponse) => {
         console.log(res);
-        // if (res.status === 200) {
-        //   navigate("/login");
-        // }
+        if (res.status === 20) {
+          alert("success !");
+        }
       })
       .catch((error: AxiosError) => {
         console.log(error);
-        if (error.message === "NOT_ALL_DATA") {
+        if (error.response?.status === 409) {
+          // email utilisé
+          alert("email deja utilisé");
         }
-        if (error.message === "PASSWORD_IS_NOT_EQUIVALENT") {
+        if (error.response?.status === 403) {
+          //un petit malin a envoyé les mauvaise données
+          alert("veillez a envoyer les bonnes données...");
         }
-        if (error.message === "INTERNAL_ERROR") {
+        if (error.response?.status === 400) {
+          //mot de passe et repeter mot de passe differents
+          alert("mot de passe et repeter mot de passe differents");
+        }
+        if (error.response?.status === 500) {
+          // probleme venant du serveur (réessayer plus tard)
+          alert("probleme venant du serveur (réessayer plus tard)");
         }
       });
 
