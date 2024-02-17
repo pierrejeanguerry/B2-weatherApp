@@ -1,32 +1,38 @@
 import { View, TextInput, Button, Text, StyleSheet} from 'react-native';
-import { AsyncStorage } from '@react-native-async-storage/async-storage'
-import { useForm, Controller } from 'react-hook-form';
-import { useCallback, useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useState } from 'react';
 import axios from 'axios';
 
 const LoginForm = () => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
-  const [bool, setBool] = useState(false);
+
+  const storeToken = async (token) =>{
+    try{
+      await AsyncStorage.setItem('token', token);
+      console.log("Data stored");
+    }
+    catch{
+      console.error("storeToken error");
+    }
+  }
 
   function handleSubmit(){
+    const data= {
+      'username': login,
+      'password': password
+    }
 
-      const response = axios({
-        method: "post",
-        url: 'http://192.168.1.94:8081/api/login',
-        body: {
-          'username': login,
-          'password': password
-        }
-      })
-      .then(() => {
-        setBool(true);
-        // AsyncStorage.setItem('token', response.data.token);
-        // Navigation.navigate('Home');
-      })
-      .catch ((error) => {
-        console.error('Erreur de connexion : ', error);
-      });
+    const headers = {
+      'Content-Type': 'application/json',
+    }
+    axios.post('http://192.168.1.94:8000/api/login', data, headers)
+    .then((res) => {
+      console.log(res.data);
+    })
+    .catch((error) => {
+      console.error('Une erreur s\'est produite:', error);
+    })
   }
   return (
     <View style={styles.container}>
@@ -44,7 +50,6 @@ const LoginForm = () => {
             onChangeText={newPassword => setPassword(newPassword)}
           />
       <Button title="Submit" onPress={handleSubmit} color={'#227138'} />
-      {bool ? <Text style={styles.input}>Oui</Text>: <Text style={styles.input}>Non</Text>}
     </View>
   );
 };
@@ -79,6 +84,16 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: 'green',
   },
+  non: {
+    color: 'red',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  oui: {
+    color: 'green',
+    fontSize: 24,
+    fontWeight: 'bold',
+  }
 });
 
 export default LoginForm;
