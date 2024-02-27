@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Pressable, Image, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import RegisterForm from '../components/RegisterForm';
+import { useNavigation } from '@react-navigation/native';
 
-const RegisterScreen = ({ navigation }) => {
+const RegisterScreen = () => {
   const [hide, setHide] = useState(false);
-
+  const navigation = useNavigation();
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
@@ -28,7 +29,11 @@ const RegisterScreen = ({ navigation }) => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <Pressable style={styles.button}
-          onPress={() => navigation.navigate('Login')}
+          onPress={() => navigation.reset({
+            index: 0,
+            routes: [{ name: 'Login' }]
+          })
+        }
         >
           <Text style={styles.textButton}>Sign in</Text>
         </Pressable>

@@ -22,7 +22,7 @@ export default function RegisterForm() {
             setIsLoading(true);
             await signUp(username, email, password, repeatPassword);
             setIsLoading(false);
-            navigation.goBack();
+            navigation.navigate('Login');
         } catch (error) {
             setIsLoading(false);
             setErrorMessage(error.message);
@@ -33,20 +33,20 @@ export default function RegisterForm() {
         <Text style={styles.title}>Register</Text>
         <TextInput style={styles.input}
             placeholder="Username"
-            placeholderTextColor={'black'}
+            placeholderTextColor={'gray'}
             onChangeText={newLogin => setUsername(newLogin)}
             value={username}
         />
         <TextInput style={styles.input}
             placeholder="Email"
-            placeholderTextColor={'black'}
+            placeholderTextColor={'gray'}
             onChangeText={newLogin => setEmail(newLogin)}
             value={email}
         />
         <View style={styles.passwordContainer}>
             <TextInput style={styles.passwordInput}
                 placeholder="Password"
-                placeholderTextColor={'black'}
+                placeholderTextColor={'gray'}
                 onChangeText={newLogin => setPassword(newLogin)}
                 value={password}
                 secureTextEntry={!showPassword}
@@ -60,7 +60,7 @@ export default function RegisterForm() {
         <View style={styles.passwordContainer}>
             <TextInput style={styles.passwordInput}
                 placeholder="Repeat password"
-                placeholderTextColor={'black'}
+                placeholderTextColor={'gray'}
                 onChangeText={newLogin => setRepeatPassword(newLogin)}
                 value={repeatPassword}
                 secureTextEntry={!showRepeatPassword}
@@ -73,7 +73,7 @@ export default function RegisterForm() {
             
         </View>
         <Text style={styles.passwordText}>
-                1 min, 1 maj, 1 number and 10-20 characters.
+        At least 1 lowercase and uppercase character, 1 number and 10-20 characters.
             </Text>
         {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
         <Button title="Submit" 

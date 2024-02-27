@@ -123,10 +123,10 @@ export default function App() {
       signUp: async (username, email, password, repeatPassword) => {
 
         if (password !== repeatPassword)
-          throw new Error('Password and repeat password are not equals.');
+          throw new Error("Passwords don't match.");
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{10,20}$/;
         if (!passwordRegex.test(password))
-          throw new Error('Password is not strong enough. 1 minus, 1 maj, 1 number, beetween 10 and 20 characters.');
+          throw new Error('Password is not strong enough. At least 1 lowercase and uppercase character, 1 number, between 10 and 20 characters.');
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if(!emailRegex.test(email))
           throw new Error('Email is not valid.');
