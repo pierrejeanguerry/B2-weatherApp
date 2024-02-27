@@ -1,19 +1,40 @@
-import React from 'react';
-import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Pressable, Image, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import LoginForm from '../components/LoginForm';
 
 
 const LoginScreen = ({navigation}) => {
+  const [hide, setHide] = useState(false);
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setHide(true);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setHide(false);
+      }
+    );
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
   return (
-    <View style={styles.container}>
-      <Pressable style={styles.button}
-        onPress={() => navigation.navigate('Register')}
-      >
-        <Text style={styles.textButton}>Sign up</Text>
-      </Pressable>
-      <Image source={require('../../assets/logov1.png')} style={styles.logo}/>
-      <LoginForm/>
-    </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <Pressable style={styles.button}
+          onPress={() => navigation.navigate('Register')}
+        >
+          <Text style={styles.textButton}>Sign up</Text>
+        </Pressable>
+        {hide ? null : <Image source={require('../../assets/logov1.png')} style={styles.logo}/>}
+        <LoginForm/>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -45,36 +66,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     resizeMode: 'contain',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: 'white'
-  },
-  input: {
-    color: 'white',
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    marginBottom: 20,
-    width: '70%',
-  },
-  buttonSubmit: {
-    width: "40%",
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 4,
-    backgroundColor: 'green',
-  },
-  erreur: {
-    paddingBottom: 10,
-    textAlign: 'left',
-    color: 'red',
-    fontWeight: 'bold',
-  },
+  }
 });
 
 export default LoginScreen;

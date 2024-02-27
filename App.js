@@ -5,12 +5,11 @@ import RegisterScreen from './src/screens/RegisterScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import AuthContext from './src/components/AuthContext';
 
 const Stack = createNativeStackNavigator();
-export default function App({ navigation }) {
-
+export default function App() {
   const [state, dispatch] = useReducer(
     (prevState, action) => {
       switch (action.type) {
@@ -95,7 +94,7 @@ export default function App({ navigation }) {
           await save('userToken', res.data.token_user); // Attendez que le jeton soit enregistré
           dispatch({ type: 'SIGN_IN', token: res.data.token_user });
         } catch (error) {
-          throw new Error('Impossible de se connecter. Veuillez vérifier votre connexion internet.');
+          throw new Error('Non valid Ids.');
         }
       },
       signOut: async () => {
@@ -121,13 +120,32 @@ export default function App({ navigation }) {
             console.error('Une erreur s\'est produite :', error);
         }
       },
-      signUp: async (data) => {
-        // In a production app, we need to send user data to server and get a token
-        // We will also need to handle errors if sign up failed
-        // After getting token, we need to persist the token using `SecureStore`
-        // In the example, we'll use a dummy token
+      signUp: async (username, email, password, repeatPassword) => {
 
-        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+        if (password !== repeatPassword)
+          throw new Error('Password and repeat password are not equals.');
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{10,20}$/;
+        if (!passwordRegex.test(password))
+          throw new Error('Password is not strong enough. 1 minus, 1 maj, 1 number, beetween 10 and 20 characters.');
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if(!emailRegex.test(email))
+          throw new Error('Email is not valid.');
+        try{
+          const headers= {
+            'Connection': 'keep-alive',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          }
+          const data = {
+            'username': username,
+            'email': email,
+            'password': password
+          }
+          await axios.post('http://176.190.38.210:8001/api/register', data, headers);
+        } catch (error){
+          console.error('Une erreur s\'est produite:', error);
+          throw new Error('User already exist.')
+        }
       },
     }),
     []

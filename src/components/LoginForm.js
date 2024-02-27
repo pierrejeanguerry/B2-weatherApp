@@ -5,14 +5,14 @@ import AuthContext  from './AuthContext'
 const LoginForm = () => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const {signIn} = useContext(AuthContext);
 
   const handleSignIn = async () => {
     try {
       await signIn(login, password);
     } catch (error) {
-      setErrorMessage(true); // Définir le message d'erreur pour l'afficher à l'utilisateur
+      setErrorMessage(error.message); // Définir le message d'erreur pour l'afficher à l'utilisateur
     }
   };
   return (
@@ -32,7 +32,7 @@ const LoginForm = () => {
             onChangeText={newPassword => setPassword(newPassword)}
             value={password}
       />
-      {errorMessage ? <Text style={styles.error}>{"Identifiants invalides"}</Text> : null}
+      {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
       <Button title="Submit" onPress={handleSignIn} color={'#227138'} disabled={!login.trim() || !password.trim()}/>
     </View>
   );
