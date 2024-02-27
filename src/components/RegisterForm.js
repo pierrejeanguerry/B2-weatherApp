@@ -1,4 +1,4 @@
-import { View, TextInput, Button, Text, StyleSheet} from 'react-native';
+import { View, TextInput, Button, Text, StyleSheet, Modal, ActivityIndicator} from 'react-native';
 import { useState, useContext } from 'react';
 import React from 'react';
 import AuthContext from './AuthContext';
@@ -11,17 +11,21 @@ export default function RegisterForm() {
     const [repeatPassword, setRepeatPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState('');
     const navigation = useNavigation();
+    const [isLoading, setIsLoading] = useState(false);
 
     const {signUp} = useContext(AuthContext);
 
     const handleSignUp = async () => {
         try {
+            setIsLoading(true);
             await signUp(username, email, password, repeatPassword);
+            setIsLoading(false);
             navigation.goBack();
         } catch (error) {
-          setErrorMessage(error.message);
+            setIsLoading(false);
+            setErrorMessage(error.message);
         }
-      };
+    };
   return (
     <View style={styles.container}>
         <Text style={styles.title}>Register</Text>
@@ -30,33 +34,38 @@ export default function RegisterForm() {
             placeholderTextColor={'black'}
             onChangeText={newLogin => setUsername(newLogin)}
             value={username}
-            />
+        />
         <TextInput style={styles.input}
             placeholder="Email"
             placeholderTextColor={'black'}
             onChangeText={newLogin => setEmail(newLogin)}
             value={email}
-            />
+        />
         <TextInput style={styles.input}
             placeholder="Password"
             placeholderTextColor={'black'}
             onChangeText={newLogin => setPassword(newLogin)}
             value={password}
-            // secureTextEntry={true}
-            />
+            secureTextEntry={true}
+        />
         <TextInput style={styles.input}
             placeholder="Repeat password"
             placeholderTextColor={'black'}
             onChangeText={newLogin => setRepeatPassword(newLogin)}
             value={repeatPassword}
-            // secureTextEntry={true}
-            />
+            secureTextEntry={true}
+        />
         {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
         <Button title="Submit" 
             onPress={handleSignUp} 
             color={'#226871'} 
             disabled={!username.trim() || !email.trim() || !password.trim() || !repeatPassword.trim()}
-            />
+        />
+        <Modal visible={isLoading} transparent={true} animationType="fade">
+            <View style={styles.modalContainer}>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+        </Modal>
     </View>
   )
 }
@@ -95,5 +104,11 @@ const styles = StyleSheet.create({
       textAlign: 'left',
       color: 'red',
       fontWeight: 'bold',
+    },
+    modalContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
   });

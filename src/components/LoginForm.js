@@ -1,4 +1,4 @@
-import { View, TextInput, Button, Text, StyleSheet} from 'react-native';
+import { View, TextInput, Button, Text, StyleSheet, Modal, ActivityIndicator} from 'react-native';
 import { useState, useContext } from 'react';
 import AuthContext  from './AuthContext'
 
@@ -7,12 +7,17 @@ const LoginForm = () => {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const {signIn} = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false);
+
 
   const handleSignIn = async () => {
     try {
+      setIsLoading(true);
       await signIn(login, password);
+      setIsLoading(false);
     } catch (error) {
-      setErrorMessage(error.message); // Définir le message d'erreur pour l'afficher à l'utilisateur
+      setIsLoading(false);
+      setErrorMessage(error.message);
     }
   };
   return (
@@ -31,9 +36,15 @@ const LoginForm = () => {
             placeholderTextColor={'white'}
             onChangeText={newPassword => setPassword(newPassword)}
             value={password}
+            secureTextEntry={true}
       />
       {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
       <Button title="Submit" onPress={handleSignIn} color={'#227138'} disabled={!login.trim() || !password.trim()}/>
+      <Modal visible={isLoading} transparent={true} animationType="fade">
+            <View style={styles.modalContainer}>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+        </Modal>
     </View>
   );
 };
@@ -72,6 +83,12 @@ const styles = StyleSheet.create({
     color: 'red',
     fontWeight: 'bold',
   },
+  modalContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fond gris foncé semi-transparent
+},
 });
 
 export default LoginForm;
