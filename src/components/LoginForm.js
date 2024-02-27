@@ -20,7 +20,7 @@ const LoginForm = () => {
       <Text style={styles.title}>Login</Text>
       <TextInput
             style={styles.input}
-            placeholder="Login"
+            placeholder="Email"
             placeholderTextColor={'white'}
             onChangeText={newLogin => setLogin(newLogin)}
             value={login}
