@@ -27,7 +27,7 @@ const LoginForm = () => {
       <TextInput
             style={styles.input}
             placeholder="Email"
-            placeholderTextColor={'white'}
+            placeholderTextColor={'gray'}
             onChangeText={newLogin => setLogin(newLogin)}
             value={login}
       />
@@ -35,7 +35,7 @@ const LoginForm = () => {
         <TextInput
               style={styles.passwordInput}
               placeholder="Password"
-              placeholderTextColor={'white'}
+              placeholderTextColor={'gray'}
               onChangeText={newPassword => setPassword(newPassword)}
               value={password}
               secureTextEntry={!showPassword}
