@@ -12,6 +12,8 @@ export default function RegisterForm() {
     const [errorMessage, setErrorMessage] = useState('');
     const navigation = useNavigation();
     const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
     const {signUp} = useContext(AuthContext);
 
@@ -41,20 +43,38 @@ export default function RegisterForm() {
             onChangeText={newLogin => setEmail(newLogin)}
             value={email}
         />
-        <TextInput style={styles.input}
-            placeholder="Password"
-            placeholderTextColor={'black'}
-            onChangeText={newLogin => setPassword(newLogin)}
-            value={password}
-            secureTextEntry={true}
-        />
-        <TextInput style={styles.input}
-            placeholder="Repeat password"
-            placeholderTextColor={'black'}
-            onChangeText={newLogin => setRepeatPassword(newLogin)}
-            value={repeatPassword}
-            secureTextEntry={true}
-        />
+        <View style={styles.passwordContainer}>
+            <TextInput style={styles.passwordInput}
+                placeholder="Password"
+                placeholderTextColor={'black'}
+                onChangeText={newLogin => setPassword(newLogin)}
+                value={password}
+                secureTextEntry={!showPassword}
+            />
+            <Button
+            title={showPassword ? "Hide" : "Show"}
+            onPress={() => setShowPassword(!showPassword)}
+            color={'gray'}
+            />
+        </View>
+        <View style={styles.passwordContainer}>
+            <TextInput style={styles.passwordInput}
+                placeholder="Repeat password"
+                placeholderTextColor={'black'}
+                onChangeText={newLogin => setRepeatPassword(newLogin)}
+                value={repeatPassword}
+                secureTextEntry={!showRepeatPassword}
+            />
+            <Button
+                title={showRepeatPassword ? "Hide" : "Show"}
+                onPress={() => setShowRepeatPassword(!showRepeatPassword)}
+                color={'gray'}
+            />
+            
+        </View>
+        <Text style={styles.passwordText}>
+                1 min, 1 maj, 1 number and 10-20 characters.
+            </Text>
         {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
         <Button title="Submit" 
             onPress={handleSignUp} 
@@ -87,7 +107,7 @@ const styles = StyleSheet.create({
       borderWidth: 1,
       borderColor: '#ccc',
       padding: 10,
-      marginBottom: 20,
+      marginBottom: 10,
       width: '70%',
     },
     button: {
@@ -111,4 +131,24 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
+      passwordContainer: {
+        flexDirection: 'row', // Pour aligner l'input et le bouton sur la même ligne
+        alignItems: 'center',
+        marginBottom: 10,
+        width: '70%',
+        color: 'white',
+      },
+      passwordInput: {
+        flex: 1,
+        color: 'black',
+        borderWidth: 1,
+        borderColor: '#ccc',
+        padding: 10,
+      },
+      passwordText: {
+        flexDirection: "row",
+        fontSize: 12,
+        marginBottom: 20,
+        color: 'gray'
+      }
   });

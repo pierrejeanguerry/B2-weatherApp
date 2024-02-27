@@ -8,6 +8,7 @@ const LoginForm = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const {signIn} = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
 
   const handleSignIn = async () => {
@@ -30,14 +31,22 @@ const LoginForm = () => {
             onChangeText={newLogin => setLogin(newLogin)}
             value={login}
       />
-      <TextInput
-            style={styles.input}
-            placeholder="password"
-            placeholderTextColor={'white'}
-            onChangeText={newPassword => setPassword(newPassword)}
-            value={password}
-            secureTextEntry={true}
-      />
+      <View style={styles.passwordContainer}>
+        <TextInput
+              style={styles.passwordInput}
+              placeholder="Password"
+              placeholderTextColor={'white'}
+              onChangeText={newPassword => setPassword(newPassword)}
+              value={password}
+              secureTextEntry={!showPassword}
+        />
+        <Button
+        style={styles.passwordButton}
+        title={showPassword ? "Hide" : "Show"}
+        onPress={() => setShowPassword(!showPassword)}
+        color={'gray'}
+        />
+      </View>
       {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
       <Button title="Submit" onPress={handleSignIn} color={'#227138'} disabled={!login.trim() || !password.trim()}/>
       <Modal visible={isLoading} transparent={true} animationType="fade">
@@ -88,7 +97,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fond gris foncé semi-transparent
-},
+  },
+  passwordContainer: {
+    flexDirection: 'row', // Pour aligner l'input et le bouton sur la même ligne
+    alignItems: 'center',
+    marginBottom: 20,
+    width: '70%',
+    color: 'white',
+  },
+  passwordInput: {
+    flex: 1,
+    color: 'white',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 10,
+  },
 });
 
 export default LoginForm;
