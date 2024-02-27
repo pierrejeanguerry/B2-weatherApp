@@ -95,7 +95,7 @@ export default function App({ navigation }) {
           await save('userToken', res.data.token_user); // Attendez que le jeton soit enregistré
           dispatch({ type: 'SIGN_IN', token: res.data.token_user });
         } catch (error) {
-          console.error('Une erreur s\'est produite:', error);
+          throw new Error('Impossible de se connecter. Veuillez vérifier votre connexion internet.');
         }
       },
       signOut: async () => {
