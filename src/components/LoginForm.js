@@ -1,65 +1,58 @@
-import { View, TextInput, Button, Text, StyleSheet} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useState } from 'react';
-import axios from 'axios';
+import { View, TextInput, Button, Text, StyleSheet, Modal, ActivityIndicator} from 'react-native';
+import { useState, useContext } from 'react';
+import AuthContext  from './AuthContext'
 
 const LoginForm = () => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const {signIn} = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const storeToken = async (token) =>{
-    try{
-      await AsyncStorage.setItem('token', token);
-      console.log("Data stored");
-    }
-    catch{
-      console.error("storeToken error");
-    }
-  }
 
-  function handleSubmit(){
-    const data= {
-      'username': login,
-      'password': password
+  const handleSignIn = async () => {
+    try {
+      setIsLoading(true);
+      await signIn(login, password);
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      setErrorMessage(error.message);
     }
-
-    const headers = {
-      'Content-Type': 'application/json',
-    }
-    axios.post('http://192.168.1.94:8000/api/login', data, headers)
-    .then((res) => {
-      console.log(res.data);
-    })
-    .catch((error) => {
-      console.error('Une erreur s\'est produite:', error);
-    })
-  }
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
-          <TextInput
+      <TextInput
             style={styles.input}
-            placeholder="Login"
+            placeholder="Email"
             placeholderTextColor={'white'}
             onChangeText={newLogin => setLogin(newLogin)}
-          />
-          <TextInput
+            value={login}
+      />
+      <TextInput
             style={styles.input}
             placeholder="password"
             placeholderTextColor={'white'}
             onChangeText={newPassword => setPassword(newPassword)}
-          />
-      <Button title="Submit" onPress={handleSubmit} color={'#227138'} />
+            value={password}
+            secureTextEntry={true}
+      />
+      {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
+      <Button title="Submit" onPress={handleSignIn} color={'#227138'} disabled={!login.trim() || !password.trim()}/>
+      <Modal visible={isLoading} transparent={true} animationType="fade">
+            <View style={styles.modalContainer}>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+        </Modal>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
-    height: '100%'
+    justifyContent: 'center'
   },
   title: {
     fontSize: 24,
@@ -84,16 +77,18 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: 'green',
   },
-  non: {
+  error: {
+    paddingBottom: 10,
+    textAlign: 'left',
     color: 'red',
-    fontSize: 24,
     fontWeight: 'bold',
   },
-  oui: {
-    color: 'green',
-    fontSize: 24,
-    fontWeight: 'bold',
-  }
+  modalContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fond gris foncé semi-transparent
+},
 });
 
 export default LoginForm;
