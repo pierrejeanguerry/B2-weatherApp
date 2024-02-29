@@ -56,10 +56,11 @@ export default function App() {
         const headers = {
           Connection: "keep-alive",
           "Content-Type": "application/json",
+          Accept: "application/json",
           token_user: userToken,
         };
         axios
-          .post("http://176.190.38.210:8001/api/login/check", {}, headers)
+          .post("http://176.190.38.210:8001/api/login/check", {}, { headers })
           .then((res) => {
             dispatch({ type: "RESTORE_TOKEN", token: userToken });
           })
@@ -70,14 +71,6 @@ export default function App() {
     };
     VerifyTokenAsync();
   }, []);
-
-  async function save(key, value) {
-    await SecureStore.setItemAsync(key, value);
-  }
-
-  async function getValueFor(key) {
-    return await SecureStore.getItemAsync(key);
-  }
 
   const authContext = useMemo(
     () => ({
@@ -95,9 +88,9 @@ export default function App() {
           const res = await axios.post(
             "http://176.190.38.210:8001/api/login",
             data,
-            headers
+            { headers }
           );
-          await save("userToken", res.data.token_user);
+          await SecureStore.setItemAsync("userToken", res.data.token_user);
           console.log(res.data.token_user);
           dispatch({ type: "SIGN_IN", token: res.data.token_user });
         } catch (error) {
@@ -107,28 +100,30 @@ export default function App() {
       signOut: async () => {
         let userToken;
         try {
-          userToken = getValueFor("userToken");
-        } catch (error) {
-          console.error("Erreur lors de la récupération du token :", error);
-        }
-        try {
-          if (userToken) {
-            const headers = {
-              Connection: "keep-alive",
-              "Content-Type": "application/json",
-              Accept: "application/json",
-              token_user: userToken,
-            };
-            await axios.post(
-              "http://176.190.38.210:8001/api/login/logout",
-              {},
-              headers
-            );
-            await SecureStore.deleteItemAsync("userToken");
-            dispatch({ type: "SIGN_OUT" });
+          userToken = await SecureStore.getItemAsync("userToken");
+          try {
+            if (userToken) {
+              const headers = {
+                Connection: "keep-alive",
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                token_user: userToken,
+              };
+
+              const res = await axios.post(
+                "http://176.190.38.210:8001/api/login/logout",
+                {},
+                { headers }
+              );
+              console.log(res.data);
+              await SecureStore.deleteItemAsync("userToken");
+              dispatch({ type: "SIGN_OUT" });
+            }
+          } catch (error) {
+            console.error("Une erreur s'est produite :", error);
           }
         } catch (error) {
-          console.error("Une erreur s'est produite :", error);
+          console.error("Erreur lors de la récupération du token :", error);
         }
       },
       signUp: async (username, email, password, repeatPassword) => {
@@ -152,11 +147,9 @@ export default function App() {
             email: email,
             password: password,
           };
-          await axios.post(
-            "http://176.190.38.210:8001/api/register",
-            data,
-            headers
-          );
+          await axios.post("http://176.190.38.210:8001/api/register", data, {
+            headers,
+          });
         } catch (error) {
           console.error("Une erreur s'est produite:", error);
           throw new Error("User already exist.");
