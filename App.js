@@ -65,7 +65,7 @@ export default function App() {
             dispatch({ type: "RESTORE_TOKEN", token: userToken });
           })
           .catch((error) => {
-            console.error("Token non valide ou non existant");
+            dispatch({ type: "SIGN_OUT" });
           });
       }
     };
@@ -91,7 +91,6 @@ export default function App() {
             { headers }
           );
           await SecureStore.setItemAsync("userToken", res.data.token_user);
-          console.log(res.data.token_user);
           dispatch({ type: "SIGN_IN", token: res.data.token_user });
         } catch (error) {
           throw new Error("Non valid Ids.");

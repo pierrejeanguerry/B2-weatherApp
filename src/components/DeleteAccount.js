@@ -12,7 +12,6 @@ import { useNavigation } from "@react-navigation/native";
 import * as SecureStore from "expo-secure-store";
 import LoadingModal from "./LoadingModal";
 import axios from "axios";
-import AuthContext from "./AuthContext";
 
 export default function DeleteAccount() {
   const [deleteAccount, setDeleteAccount] = useState(false);
@@ -20,7 +19,6 @@ export default function DeleteAccount() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
-  const navigation = useNavigation();
 
   function handleClose() {
     setDeleteAccount(false);
@@ -49,9 +47,7 @@ export default function DeleteAccount() {
         setDeleteAccount(!deleteAccount);
         setIsLoading(false);
         setPassword("");
-        navigation.navigate("Login");
       } catch (e) {
-        console.log(e);
         throw new Error(e);
       }
     } catch (error) {
