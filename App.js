@@ -8,9 +8,27 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import AuthContext from "./src/components/AuthContext";
 import SettingScreen from "./src/screens/SettingScreen";
+import { createStackNavigator } from "@react-navigation/stack";
 
 const Stack = createNativeStackNavigator();
 
+function AuthNavigator() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Register" component={RegisterScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function AppNavigator() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Setting" component={SettingScreen} />
+    </Stack.Navigator>
+  );
+}
 export default function App() {
   const [state, dispatch] = useReducer(
     (prevState, action) => {
@@ -60,12 +78,12 @@ export default function App() {
           token_user: userToken,
         };
         axios
-          .post("http://176.190.38.210:8001/api/login/check", {}, { headers })
+          .post("http://176.190.38.210:8000/api/login/check", {}, { headers })
           .then((res) => {
             dispatch({ type: "RESTORE_TOKEN", token: userToken });
           })
           .catch((error) => {
-            console.error("Token non valide ou non existant");
+            dispatch({ type: "SIGN_OUT" });
           });
       }
     };
@@ -86,15 +104,42 @@ export default function App() {
         };
         try {
           const res = await axios.post(
-            "http://176.190.38.210:8001/api/login",
+            "http://176.190.38.210:8000/api/login",
             data,
             { headers }
           );
           await SecureStore.setItemAsync("userToken", res.data.token_user);
-          console.log(res.data.token_user);
           dispatch({ type: "SIGN_IN", token: res.data.token_user });
         } catch (error) {
           throw new Error("Non valid Ids.");
+        }
+      },
+      deleteAcc: async (password) => {
+        let userToken;
+        try {
+          userToken = await SecureStore.getItemAsync("userToken");
+          try {
+            if (userToken) {
+              const headers = {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                token_user: userToken,
+              };
+              const data = {
+                password: password,
+              };
+              const res = await axios.delete(
+                "http://176.190.38.210:8000/api/user/id/delete",
+                { data: data, headers: headers }
+              );
+              await SecureStore.deleteItemAsync("userToken");
+              dispatch({ type: "SIGN_OUT" });
+            }
+          } catch (error) {
+            console.error("Une erreur s'est produite :", error);
+          }
+        } catch (error) {
+          console.error("Erreur lors de la récupération du token :", error);
         }
       },
       signOut: async () => {
@@ -111,11 +156,10 @@ export default function App() {
               };
 
               const res = await axios.post(
-                "http://176.190.38.210:8001/api/login/logout",
+                "http://176.190.38.210:8000/api/login/logout",
                 {},
                 { headers }
               );
-              console.log(res.data);
               await SecureStore.deleteItemAsync("userToken");
               dispatch({ type: "SIGN_OUT" });
             }
@@ -147,7 +191,7 @@ export default function App() {
             email: email,
             password: password,
           };
-          await axios.post("http://176.190.38.210:8001/api/register", data, {
+          await axios.post("http://176.190.38.210:8000/api/register", data, {
             headers,
           });
         } catch (error) {
@@ -162,19 +206,7 @@ export default function App() {
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
-        <Stack.Navigator>
-          {state.userToken == null ? (
-            <>
-              <Stack.Screen name="Login" component={LoginScreen} />
-              <Stack.Screen name="Register" component={RegisterScreen} />
-            </>
-          ) : (
-            <>
-              <Stack.Screen name="Home" component={HomeScreen} />
-              <Stack.Screen name="Setting" component={SettingScreen} />
-            </>
-          )}
-        </Stack.Navigator>
+        {state.userToken == null ? <AuthNavigator /> : <AppNavigator />}
       </NavigationContainer>
     </AuthContext.Provider>
   );

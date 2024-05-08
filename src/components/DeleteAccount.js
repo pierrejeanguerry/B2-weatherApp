@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -21,6 +21,7 @@ export default function DeleteAccount() {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
   const navigation = useNavigation();
+  const { deleteAcc } = useContext(AuthContext);
 
   function handleClose() {
     setDeleteAccount(false);
@@ -28,34 +29,14 @@ export default function DeleteAccount() {
   }
 
   async function handleDeleteAccount() {
-    let userToken;
-    setIsLoading(true);
-
     try {
-      userToken = await SecureStore.getItemAsync("userToken");
-      try {
-        const headers = {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          token_user: userToken,
-        };
-        const data = {
-          password: password,
-        };
-        const res = await axios.delete(
-          "http://176.190.38.210:8001/api/user/id/delete",
-          { data: data, headers: headers }
-        );
-        setDeleteAccount(!deleteAccount);
-        setIsLoading(false);
-        setPassword("");
-        navigation.navigate("Login");
-      } catch (e) {
-        console.log(e);
-        throw new Error(e);
-      }
+      setIsLoading(true);
+      await deleteAcc(password);
+      setIsLoading(false);
+      setDeleteAccount(false);
     } catch (error) {
       setIsLoading(false);
+      setDeleteAccount(false);
       setErrorMessage(error.message);
     }
   }
