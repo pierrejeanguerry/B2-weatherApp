@@ -51,7 +51,7 @@ export default function ModifyAccount() {
           currentPassword: currentPassword,
         };
         const res = await axios.put(
-          "http://176.190.38.210:8001/api/user/id/update",
+          "http://176.190.38.210:8000/api/user/id/update",
           data,
           { headers: headers }
         );

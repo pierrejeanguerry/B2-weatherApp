@@ -30,7 +30,7 @@ export default function ModifyUsername() {
           token_user: userToken,
         };
         const res = await axios.get(
-          "http://176.190.38.210:8001/api/user/username/get",
+          "http://176.190.38.210:8000/api/user/username/get",
           { headers: headers }
         );
         setUsername(res.data.username);
@@ -60,7 +60,7 @@ export default function ModifyUsername() {
           username: newUsername,
         };
         const res = await axios.put(
-          "http://176.190.38.210:8001/api/user/username/update",
+          "http://176.190.38.210:8000/api/user/username/update",
           data,
           { headers: headers }
         );
