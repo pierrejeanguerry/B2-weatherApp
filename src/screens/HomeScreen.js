@@ -16,6 +16,11 @@ const HomeScreen = () => {
         onPress={() => navigation.navigate("Setting")}
         color={"blue"}
       />
+      <Button
+        title="Add Station"
+        onPress={() => navigation.navigate("AddStation")}
+        color={"green"}
+      />
     </View>
   );
 };

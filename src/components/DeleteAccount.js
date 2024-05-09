@@ -8,10 +8,7 @@ import {
   Modal,
   TextInput,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import * as SecureStore from "expo-secure-store";
 import LoadingModal from "./LoadingModal";
-import axios from "axios";
 import AuthContext from "./AuthContext";
 
 export default function DeleteAccount() {
@@ -20,7 +17,6 @@ export default function DeleteAccount() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
-  const navigation = useNavigation();
   const { deleteAcc } = useContext(AuthContext);
 
   function handleClose() {

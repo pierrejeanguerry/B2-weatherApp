@@ -9,6 +9,9 @@ import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import AuthContext from "./src/components/AuthContext";
 import SettingScreen from "./src/screens/SettingScreen";
 import { createStackNavigator } from "@react-navigation/stack";
+import AddBuildingScreen from "./src/screens/AddBuildingScreen";
+import AddRoomScreen from "./src/screens/AddRoomScreen";
+import AddStationScreen from "./src/screens/AddStationScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +29,9 @@ function AppNavigator() {
     <Stack.Navigator>
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Setting" component={SettingScreen} />
+      <Stack.Screen name="AddBuilding" component={AddBuildingScreen} />
+      <Stack.Screen name="AddRoom" component={AddRoomScreen} />
+      <Stack.Screen name="AddStation" component={AddStationScreen} />
     </Stack.Navigator>
   );
 }

@@ -8,7 +8,6 @@ import {
   Modal,
   TextInput,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import * as SecureStore from "expo-secure-store";
 
 import axios from "axios";
