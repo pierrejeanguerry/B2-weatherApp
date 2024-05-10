@@ -8,10 +8,9 @@ import { useNavigation } from "@react-navigation/native";
 const AddRoomScreen = ({ route, navigation }) => {
   const { idBuilding } = route.params;
   const [name, setName] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  async function handleAddBuilding() {
+  async function handleAddRoom() {
     let userToken;
     try {
       userToken = await SecureStore.getItemAsync("userToken");
@@ -54,10 +53,9 @@ const AddRoomScreen = ({ route, navigation }) => {
         onChangeText={(newName) => setName(newName)}
         value={name}
       />
-      {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
       <Button
         title="Submit"
-        onPress={handleAddBuilding}
+        onPress={handleAddRoom}
         color={"#227138"}
         disabled={!name.trim()}
       />

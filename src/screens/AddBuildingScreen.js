@@ -7,13 +7,11 @@ import { useNavigation } from "@react-navigation/native";
 
 const AddBuildingScreen = () => {
   const [name, setName] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
 
   async function handleAddBuilding() {
     let userToken;
-    // setIsLoading(true);
     try {
       userToken = await SecureStore.getItemAsync("userToken");
     } catch (e) {
@@ -42,7 +40,7 @@ const AddBuildingScreen = () => {
         setIsLoading(false);
         navigation.navigate("AddStation");
       } catch (err) {
-        console.error(err);
+        console.error(err.message);
       }
     }
   }
@@ -57,7 +55,6 @@ const AddBuildingScreen = () => {
         onChangeText={(newName) => setName(newName)}
         value={name}
       />
-      {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
       <Button
         title="Submit"
         onPress={handleAddBuilding}

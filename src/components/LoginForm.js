@@ -1,12 +1,4 @@
-import {
-  View,
-  TextInput,
-  Button,
-  Text,
-  StyleSheet,
-  Modal,
-  ActivityIndicator,
-} from "react-native";
+import { View, TextInput, Button, Text, StyleSheet } from "react-native";
 import { useState, useContext } from "react";
 import AuthContext from "./AuthContext";
 import LoadingModal from "./LoadingModal";
@@ -55,7 +47,7 @@ const LoginForm = () => {
           color={"gray"}
         />
       </View>
-      {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
+      {errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
       <Button
         title="Submit"
         onPress={handleSignIn}

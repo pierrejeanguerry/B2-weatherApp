@@ -4,21 +4,32 @@ import {
   FlatList,
   StyleSheet,
   Button,
-  Pressable,
+  TextInput,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { useIsFocused } from "@react-navigation/native";
+import { CameraView, Camera } from "expo-camera";
+import LoadingModal from "../components/LoadingModal";
+
 const AddStationScreen = (props) => {
   const [buildingData, setBuildingData] = useState(null);
   const [roomData, setRoomData] = useState(null);
   const [idBuilding, setIdBuilding] = useState(0);
+  const [idRoom, setIdRoom] = useState(0);
   const [buildingSelected, setBuildingSelected] = useState(false);
   const [roomSelected, setRoomSelected] = useState(false);
   const navigation = useNavigation();
-  const isFocused = useIsFocused();
+  const [name, setName] = useState("");
+  const [mac, setMac] = useState("");
+  const [hasPermission, setHasPermission] = useState(null);
+  const [toScan, setToScan] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hide, setHide] = useState(false);
+  const [errMessage, setErrMessage] = useState("");
 
   const getBuildingList = async () => {
     let userToken;
@@ -65,9 +76,8 @@ const AddStationScreen = (props) => {
         token_user: userToken,
       };
       const data = {
-        id_building: id,
+        building_id: id,
       };
-      console.log("id_building: ", idBuilding, " header: ", headers);
       try {
         res = await axios.post(
           "http://176.190.38.210:8000/api/room/list",
@@ -76,7 +86,6 @@ const AddStationScreen = (props) => {
             headers,
           }
         );
-
         setRoomData(res.data.list_room);
       } catch {
         (err) => {
@@ -93,73 +102,197 @@ const AddStationScreen = (props) => {
     }, [])
   );
 
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setHide(true);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setHide(false);
+      }
+    );
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
   async function handleToggleBuilding(id) {
-    // console.log(buildingData);
     if (idBuilding != id) {
+      await getRoomList(id);
       setIdBuilding(id);
       setBuildingSelected(true);
-      getRoomList(id);
     } else {
       setIdBuilding(0);
       setBuildingSelected(false);
+      setRoomSelected(false);
     }
   }
 
-  function handleSelectRoom(id) {
-    // setIdBuilding(id);
-    // // setBuildingSelected(false);
-    // setBuildingSelected(true);
+  async function handleToggleRoom(id) {
+    if (idRoom != id) {
+      setIdRoom(id);
+      setRoomSelected(true);
+    } else {
+      setIdRoom(0);
+      setRoomSelected(false);
+    }
+  }
+
+  async function handleAddStation() {
+    let userToken;
+    try {
+      userToken = await SecureStore.getItemAsync("userToken");
+    } catch (e) {
+      console.error("message", e);
+      return;
+    }
+    if (userToken) {
+      const headers = {
+        Connection: "keep-alive",
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        token_user: userToken,
+      };
+      const data = {
+        id_room: idRoom,
+        name_station: name,
+        mac_address: mac,
+      };
+      axios
+        .post("http://176.190.38.210:8000/api/station/create", data, {
+          headers,
+        })
+        .then((res) => {
+          console.log(res);
+          setIsLoading(false);
+          navigation.navigate("Home");
+        })
+        .catch((err) => {
+          console.log(err);
+          setErrMessage("Station already used");
+        });
+    }
+  }
+
+  const getCameraPermissions = async () => {
+    const { status } = await Camera.requestCameraPermissionsAsync();
+    setHasPermission(status === "granted");
+  };
+
+  const handleBarCodeScanned = ({ data }) => {
+    setToScan(false);
+    setMac(data);
+  };
+
+  async function handleToggleQrCode() {
+    await getCameraPermissions();
+    setToScan(true);
   }
 
   return (
-    <View>
-      <Text>Select a building</Text>
-      <Button
-        title="Add building"
-        onPress={() => navigation.navigate("AddBuilding")}
-        color={"green"}
-      />
-      <FlatList
-        data={buildingData}
-        renderItem={({ item }) => (
-          <Button
-            title={item.name}
-            onPress={() => handleToggleBuilding(item.id)}
-            style={styles.item}
-          />
-        )}
-      />
-      {buildingSelected ? (
-        <>
-          <Text>Select a room</Text>
-          <Button
-            title="Add Room"
-            onPress={() =>
-              navigation.navigate("AddRoom", { idBuilding: idBuilding })
-            }
-            color={"green"}
-          />
-          <FlatList
-            data={roomData}
-            renderItem={({ item }) => (
-              <Button
-                title={item.name}
-                onPress={handleSelectRoom(item.id)}
-                style={styles.item}
-              ></Button>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View>
+        {!hide && (
+          <>
+            <Text>Select a building</Text>
+            <Button
+              title="Add building"
+              onPress={() => navigation.navigate("AddBuilding")}
+              color={"green"}
+            />
+            <FlatList
+              data={buildingData}
+              renderItem={({ item }) => (
+                <Button
+                  title={item.name}
+                  onPress={() => handleToggleBuilding(item.id)}
+                  style={styles.item}
+                />
+              )}
+            />
+            {buildingSelected && (
+              <>
+                <Text>Select a room</Text>
+                <Button
+                  title="Add Room"
+                  onPress={() =>
+                    navigation.navigate("AddRoom", { idBuilding: idBuilding })
+                  }
+                  color={"green"}
+                />
+                <FlatList
+                  data={roomData}
+                  renderItem={({ item }) => (
+                    <Button
+                      title={item.name}
+                      onPress={() => handleToggleRoom(item.id)}
+                      style={styles.item}
+                    ></Button>
+                  )}
+                />
+              </>
             )}
-          />
-        </>
-      ) : (
-        <></>
-      )}
-    </View>
+          </>
+        )}
+
+        <Text>Station name</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="station1"
+          placeholderTextColor={"gray"}
+          onChangeText={(newName) => setName(newName)}
+          value={name}
+        />
+
+        {toScan ? (
+          <>
+            <CameraView
+              onBarcodeScanned={!toScan ? undefined : handleBarCodeScanned}
+              barcodeScannerSettings={{
+                barcodeTypes: ["qr", "pdf417"],
+              }}
+              style={StyleSheet.absoluteFillObject}
+            />
+            <Button title={"Cancel"} onPress={() => setToScan(false)} />
+          </>
+        ) : (
+          <>
+            <Button title={"Tap to Scan QRcode"} onPress={handleToggleQrCode} />
+            <TextInput
+              style={styles.input}
+              placeholder="mac_address"
+              placeholderTextColor={"gray"}
+              onChangeText={(newName) => setName(newName)}
+              value={mac}
+              // editable={false}
+            />
+            {roomSelected && (
+              <>
+                {errMessage && <Text>{errMessage}</Text>}
+                <Button
+                  title="Submit"
+                  onPress={handleAddStation}
+                  color={"#227138"}
+                  disabled={!name.trim() && !mac.trim()}
+                />
+              </>
+            )}
+          </>
+        )}
+        <LoadingModal isLoading={isLoading} />
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    height: "100%",
+    // height: "100%",
     backgroundColor: "#181818",
     padding: "auto",
   },
