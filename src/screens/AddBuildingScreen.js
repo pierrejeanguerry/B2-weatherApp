@@ -18,30 +18,24 @@ const AddBuildingScreen = () => {
       console.error("message", e);
       return;
     }
-    if (userToken) {
-      const headers = {
-        Connection: "keep-alive",
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        token_user: userToken,
-      };
-      const data = {
-        name_building: name,
-      };
-      try {
-        res = axios.post(
-          "http://176.190.38.210:8000/api/building/create",
-          data,
-          {
-            headers,
-          }
-        );
-        console.log(res);
-        setIsLoading(false);
-        navigation.navigate("AddStation");
-      } catch (err) {
-        console.error(err.message);
-      }
+    const headers = {
+      Connection: "keep-alive",
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      token_user: userToken,
+    };
+    const data = {
+      name_building: name,
+    };
+    try {
+      res = axios.post("http://192.168.137.1:8000/api/building/create", data, {
+        headers,
+      });
+      console.log(await res);
+      setIsLoading(false);
+      navigation.navigate("SelectBuilding");
+    } catch (err) {
+      console.error(err.message);
     }
   }
 

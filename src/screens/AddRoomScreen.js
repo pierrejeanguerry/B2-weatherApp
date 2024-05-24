@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import LoadingModal from "../components/LoadingModal";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
-import { useNavigation } from "@react-navigation/native";
 
 const AddRoomScreen = ({ route, navigation }) => {
   const { idBuilding } = route.params;
@@ -31,12 +30,12 @@ const AddRoomScreen = ({ route, navigation }) => {
       };
       console.log("data: ", data);
       try {
-        res = axios.post("http://176.190.38.210:8000/api/room/create", data, {
+        res = axios.post("http://192.168.137.1:8000/api/room/create", data, {
           headers,
         });
         console.log(res);
         setIsLoading(false);
-        navigation.navigate("AddStation");
+        navigation.navigate("SelectRoom", { building_id: idBuilding });
       } catch (err) {
         console.error(err);
       }

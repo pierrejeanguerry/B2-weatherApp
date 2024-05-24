@@ -18,29 +18,9 @@ export default function ModifyUsername() {
   const [modifyUsername, setModifyUsername] = useState(false);
 
   async function getUsername() {
-    let userToken;
-    try {
-      userToken = await SecureStore.getItemAsync("userToken");
-      try {
-        const headers = {
-          Connection: "keep-alive",
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          token_user: userToken,
-        };
-        const res = await axios.get(
-          "http://176.190.38.210:8000/api/user/username/get",
-          { headers: headers }
-        );
-        setUsername(res.data.username);
-        setNewUsername("");
-      } catch (e) {
-        console.error("Une erreur s'est produite: ", e);
-      }
-    } catch (error) {
-      console.error("Erreur lors de la récupération du token :", error);
-    }
+    setUsername(SecureStore.getItemAsync("username"));
   }
+
   useEffect(() => {
     getUsername();
   }, []);
@@ -58,14 +38,14 @@ export default function ModifyUsername() {
         const data = {
           username: newUsername,
         };
-        const res = await axios.put(
-          "http://176.190.38.210:8000/api/user/username/update",
+        const res = await axios.post(
+          "http://192.168.137.1:8000/api/user/username/update",
           data,
           { headers: headers }
         );
-
-        setModifyUsername(!modifyUsername);
+        await SecureStore.setItemAsync("username", newUsername);
         getUsername();
+        setModifyUsername(false);
       } catch (e) {
         console.error("Une erreur s'est produite: ", e);
       }

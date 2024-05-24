@@ -12,6 +12,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import AddBuildingScreen from "./src/screens/AddBuildingScreen";
 import AddRoomScreen from "./src/screens/AddRoomScreen";
 import AddStationScreen from "./src/screens/AddStationScreen";
+import SelectBuildingScreen from "./src/screens/SelectBuildingScreen";
+import SelectRoomScreen from "./src/screens/SelectRoomScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -32,6 +34,8 @@ function AppNavigator() {
       <Stack.Screen name="AddBuilding" component={AddBuildingScreen} />
       <Stack.Screen name="AddRoom" component={AddRoomScreen} />
       <Stack.Screen name="AddStation" component={AddStationScreen} />
+      <Stack.Screen name="SelectBuilding" component={SelectBuildingScreen} />
+      <Stack.Screen name="SelectRoom" component={SelectRoomScreen} />
     </Stack.Navigator>
   );
 }
@@ -84,7 +88,7 @@ export default function App() {
           token_user: userToken,
         };
         axios
-          .post("http://176.190.38.210:8000/api/login/check", {}, { headers })
+          .post("http://192.168.137.1:8000/api/login/check", {}, { headers })
           .then((res) => {
             dispatch({ type: "RESTORE_TOKEN", token: userToken });
           })
@@ -110,11 +114,15 @@ export default function App() {
         };
         try {
           const res = await axios.post(
-            "http://176.190.38.210:8000/api/login",
+            "http://192.168.137.1:8000/api/login",
             data,
             { headers }
           );
-          await SecureStore.setItemAsync("userToken", res.data.token_user);
+          await Promise.all([
+            SecureStore.setItemAsync("userToken", res.data.token_user),
+            SecureStore.setItemAsync("username", res.data.username),
+            SecureStore.setItemAsync("email", res.data.email),
+          ]);
           dispatch({ type: "SIGN_IN", token: res.data.token_user });
         } catch (error) {
           throw new Error("Non valid Ids.");
@@ -134,9 +142,10 @@ export default function App() {
               const data = {
                 password: password,
               };
-              const res = await axios.delete(
-                "http://176.190.38.210:8000/api/user/id/delete",
-                { data: data, headers: headers }
+              const res = await axios.post(
+                "http://192.168.137.1:8000/api/user/id/delete",
+                data,
+                { headers: headers }
               );
               await SecureStore.deleteItemAsync("userToken");
               dispatch({ type: "SIGN_OUT" });
@@ -162,7 +171,7 @@ export default function App() {
               };
 
               const res = await axios.post(
-                "http://176.190.38.210:8000/api/login/logout",
+                "http://192.168.137.1:8000/api/login/logout",
                 {},
                 { headers }
               );
@@ -197,7 +206,7 @@ export default function App() {
             email: email,
             password: password,
           };
-          await axios.post("http://176.190.38.210:8000/api/register", data, {
+          await axios.post("http://192.168.137.1:8000/api/register", data, {
             headers,
           });
         } catch (error) {

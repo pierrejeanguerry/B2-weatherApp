@@ -1,28 +1,21 @@
 import {
   View,
   Text,
-  FlatList,
   StyleSheet,
   Button,
   TextInput,
   TouchableWithoutFeedback,
   Keyboard,
+  Pressable,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { CameraView, Camera } from "expo-camera";
 import LoadingModal from "../components/LoadingModal";
 
-const AddStationScreen = (props) => {
-  const [buildingData, setBuildingData] = useState(null);
-  const [roomData, setRoomData] = useState(null);
-  const [idBuilding, setIdBuilding] = useState(0);
-  const [idRoom, setIdRoom] = useState(0);
-  const [buildingSelected, setBuildingSelected] = useState(false);
-  const [roomSelected, setRoomSelected] = useState(false);
-  const navigation = useNavigation();
+const AddStationScreen = ({ navigation, route }) => {
+  const { room_id } = route.params;
   const [name, setName] = useState("");
   const [mac, setMac] = useState("");
   const [hasPermission, setHasPermission] = useState(null);
@@ -30,77 +23,6 @@ const AddStationScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [hide, setHide] = useState(false);
   const [errMessage, setErrMessage] = useState("");
-
-  const getBuildingList = async () => {
-    let userToken;
-    try {
-      userToken = await SecureStore.getItemAsync("userToken");
-    } catch (e) {
-      console.error("message", e);
-      return;
-    }
-    if (userToken) {
-      const headers = {
-        Connection: "keep-alive",
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        token_user: userToken,
-      };
-      try {
-        res = await axios.get("http://176.190.38.210:8000/api/building/list", {
-          headers,
-        });
-
-        setBuildingData(res.data.list_building);
-      } catch {
-        (err) => {
-          console.error(err.message);
-        };
-      }
-    }
-  };
-
-  const getRoomList = async (id) => {
-    let userToken;
-    try {
-      userToken = await SecureStore.getItemAsync("userToken");
-    } catch (e) {
-      console.error("message", e);
-      return;
-    }
-    if (userToken) {
-      const headers = {
-        Connection: "keep-alive",
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        token_user: userToken,
-      };
-      const data = {
-        building_id: id,
-      };
-      try {
-        res = await axios.post(
-          "http://176.190.38.210:8000/api/room/list",
-          data,
-          {
-            headers,
-          }
-        );
-        setRoomData(res.data.list_room);
-      } catch {
-        (err) => {
-          console.error(err.message);
-        };
-      }
-    }
-  };
-
-  useFocusEffect(
-    React.useCallback(() => {
-      getBuildingList();
-      return () => {};
-    }, [])
-  );
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -121,28 +43,6 @@ const AddStationScreen = (props) => {
     };
   }, []);
 
-  async function handleToggleBuilding(id) {
-    if (idBuilding != id) {
-      await getRoomList(id);
-      setIdBuilding(id);
-      setBuildingSelected(true);
-    } else {
-      setIdBuilding(0);
-      setBuildingSelected(false);
-      setRoomSelected(false);
-    }
-  }
-
-  async function handleToggleRoom(id) {
-    if (idRoom != id) {
-      setIdRoom(id);
-      setRoomSelected(true);
-    } else {
-      setIdRoom(0);
-      setRoomSelected(false);
-    }
-  }
-
   async function handleAddStation() {
     let userToken;
     try {
@@ -159,16 +59,15 @@ const AddStationScreen = (props) => {
         token_user: userToken,
       };
       const data = {
-        id_room: idRoom,
+        id_room: room_id,
         name_station: name,
         mac_address: mac,
       };
       axios
-        .post("http://176.190.38.210:8000/api/station/create", data, {
+        .post("http://192.168.137.1:8000/api/station/create", data, {
           headers,
         })
         .then((res) => {
-          console.log(res);
           setIsLoading(false);
           navigation.navigate("Home");
         })
@@ -180,6 +79,7 @@ const AddStationScreen = (props) => {
   }
 
   const getCameraPermissions = async () => {
+    Keyboard.dismiss();
     const { status } = await Camera.requestCameraPermissionsAsync();
     setHasPermission(status === "granted");
   };
@@ -190,66 +90,14 @@ const AddStationScreen = (props) => {
   };
 
   async function handleToggleQrCode() {
-    await getCameraPermissions();
+    Keyboard.dismiss();
     setToScan(true);
   }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View>
-        {!hide && (
-          <>
-            <Text>Select a building</Text>
-            <Button
-              title="Add building"
-              onPress={() => navigation.navigate("AddBuilding")}
-              color={"green"}
-            />
-            <FlatList
-              data={buildingData}
-              renderItem={({ item }) => (
-                <Button
-                  title={item.name}
-                  onPress={() => handleToggleBuilding(item.id)}
-                  style={styles.item}
-                />
-              )}
-            />
-            {buildingSelected && (
-              <>
-                <Text>Select a room</Text>
-                <Button
-                  title="Add Room"
-                  onPress={() =>
-                    navigation.navigate("AddRoom", { idBuilding: idBuilding })
-                  }
-                  color={"green"}
-                />
-                <FlatList
-                  data={roomData}
-                  renderItem={({ item }) => (
-                    <Button
-                      title={item.name}
-                      onPress={() => handleToggleRoom(item.id)}
-                      style={styles.item}
-                    ></Button>
-                  )}
-                />
-              </>
-            )}
-          </>
-        )}
-
-        <Text>Station name</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="station1"
-          placeholderTextColor={"gray"}
-          onChangeText={(newName) => setName(newName)}
-          value={name}
-        />
-
-        {toScan ? (
+        {toScan && (
           <>
             <CameraView
               onBarcodeScanned={!toScan ? undefined : handleBarCodeScanned}
@@ -258,32 +106,56 @@ const AddStationScreen = (props) => {
               }}
               style={StyleSheet.absoluteFillObject}
             />
-            <Button title={"Cancel"} onPress={() => setToScan(false)} />
-          </>
-        ) : (
-          <>
-            <Button title={"Tap to Scan QRcode"} onPress={handleToggleQrCode} />
-            <TextInput
-              style={styles.input}
-              placeholder="mac_address"
-              placeholderTextColor={"gray"}
-              onChangeText={(newName) => setName(newName)}
-              value={mac}
-              // editable={false}
-            />
-            {roomSelected && (
-              <>
-                {errMessage && <Text>{errMessage}</Text>}
-                <Button
-                  title="Submit"
-                  onPress={handleAddStation}
-                  color={"#227138"}
-                  disabled={!name.trim() && !mac.trim()}
-                />
-              </>
-            )}
+            <Pressable
+              style={styles.cancelButton}
+              onPress={() => setToScan(false)}
+            >
+              <Text style={styles.textCancel}>Cancel</Text>
+            </Pressable>
           </>
         )}
+        <View style={styles.container}>
+          {!toScan && (
+            <>
+              <Text style={styles.textButton}>Station name</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="station1"
+                placeholderTextColor={"gray"}
+                onChangeText={(newName) => setName(newName)}
+                value={name}
+              />
+              {hasPermission ? (
+                <Pressable style={styles.button} onPress={handleToggleQrCode}>
+                  <Text style={styles.textButton}>Tap to Scan QRcode</Text>
+                </Pressable>
+              ) : (
+                <>
+                  <Pressable onPress={getCameraPermissions}>
+                    <Text style={styles.textButton}>Authorize camera</Text>
+                  </Pressable>
+                </>
+              )}
+
+              <TextInput
+                style={styles.input}
+                placeholder="mac_address"
+                placeholderTextColor={"gray"}
+                onChangeText={(newName) => setName(newName)}
+                value={mac}
+              />
+
+              {errMessage && <Text>{errMessage}</Text>}
+              <Pressable
+                onPress={handleAddStation}
+                style={styles.button}
+                disabled={!name.trim() && !mac.trim()}
+              >
+                <Text style={styles.textButton}>Submit</Text>
+              </Pressable>
+            </>
+          )}
+        </View>
         <LoadingModal isLoading={isLoading} />
       </View>
     </TouchableWithoutFeedback>
@@ -291,39 +163,75 @@ const AddStationScreen = (props) => {
 };
 
 const styles = StyleSheet.create({
+  list: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  input: {
+    alignSelf: "center",
+    color: "white",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 10,
+    marginBottom: 20,
+    width: "70%",
+  },
   container: {
-    // height: "100%",
-    backgroundColor: "#181818",
+    height: "100%",
+    // backgroundColor: "#181818",
     padding: "auto",
+    // display: "flex",
+    gap: 10,
   },
   textButton: {
-    color: "white",
+    color: "black",
     fontSize: 14,
     fontWeight: "bold",
+    textAlign: "center",
   },
   button: {
     color: "white",
-    width: "40%",
-    marginTop: "5%",
-    marginRight: "5%",
+    width: "65%",
     alignItems: "center",
-    alignSelf: "flex-end",
+    alignSelf: "center",
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 4,
     backgroundColor: "#226871",
   },
-  logo: {
-    alignSelf: "center",
-    width: 200,
-    height: 200,
-    resizeMode: "contain",
-  },
   item: {
+    backgroundColor: "white",
     padding: 10,
     fontSize: 18,
     height: 44,
+    borderRadius: 4,
     color: "black",
+    width: "65%",
+    margin: 4,
+    justifyContent: "center",
+  },
+  delete: {
+    backgroundColor: "red",
+    width: "25%",
+    borderRadius: 4,
+    margin: 4,
+    justifyContent: "center",
+  },
+  cancelButton: {
+    color: "white",
+    width: "65%",
+    alignSelf: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    backgroundColor: "red",
+  },
+  textCancel: {
+    color: "white",
+    fontSize: 14,
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
 export default AddStationScreen;
