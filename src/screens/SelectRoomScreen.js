@@ -29,7 +29,7 @@ const SelectRoomScreen = ({ navigation, route }) => {
       };
       try {
         res = await axios.post(
-          "http://192.168.137.1:8000/api/room/list",
+          "http://176.190.38.210:8000/api/room/list",
           data,
           {
             headers,
@@ -78,7 +78,7 @@ const SelectRoomScreen = ({ navigation, route }) => {
 
       try {
         res = await axios.post(
-          "http://192.168.137.1:8000/api/room/delete",
+          "http://176.190.38.210:8000/api/room/delete",
           data,
           {
             headers,

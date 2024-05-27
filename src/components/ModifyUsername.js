@@ -39,7 +39,7 @@ export default function ModifyUsername() {
           username: newUsername,
         };
         const res = await axios.post(
-          "http://192.168.137.1:8000/api/user/username/update",
+          "http://176.190.38.210:8000/api/user/username/update",
           data,
           { headers: headers }
         );

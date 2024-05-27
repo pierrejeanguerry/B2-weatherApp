@@ -88,7 +88,7 @@ export default function App() {
           token_user: userToken,
         };
         axios
-          .post("http://192.168.137.1:8000/api/login/check", {}, { headers })
+          .post("http://176.190.38.210:8000/api/login/check", {}, { headers })
           .then((res) => {
             dispatch({ type: "RESTORE_TOKEN", token: userToken });
           })
@@ -114,7 +114,7 @@ export default function App() {
         };
         try {
           const res = await axios.post(
-            "http://192.168.137.1:8000/api/login",
+            "http://176.190.38.210:8000/api/login",
             data,
             { headers }
           );
@@ -143,7 +143,7 @@ export default function App() {
                 password: password,
               };
               const res = await axios.post(
-                "http://192.168.137.1:8000/api/user/id/delete",
+                "http://176.190.38.210:8000/api/user/id/delete",
                 data,
                 { headers: headers }
               );
@@ -171,7 +171,7 @@ export default function App() {
               };
 
               const res = await axios.post(
-                "http://192.168.137.1:8000/api/login/logout",
+                "http://176.190.38.210:8000/api/login/logout",
                 {},
                 { headers }
               );
@@ -206,7 +206,7 @@ export default function App() {
             email: email,
             password: password,
           };
-          await axios.post("http://192.168.137.1:8000/api/register", data, {
+          await axios.post("http://176.190.38.210:8000/api/register", data, {
             headers,
           });
         } catch (error) {

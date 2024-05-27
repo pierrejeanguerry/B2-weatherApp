@@ -22,7 +22,7 @@ const SelectBuildingScreen = ({ navigation }) => {
         token_user: userToken,
       };
       try {
-        res = await axios.get("http://192.168.137.1:8000/api/building/list", {
+        res = await axios.get("http://176.190.38.210:8000/api/building/list", {
           headers,
         });
 
@@ -68,7 +68,7 @@ const SelectBuildingScreen = ({ navigation }) => {
 
       try {
         res = await axios.post(
-          "http://192.168.137.1:8000/api/building/delete",
+          "http://176.190.38.210:8000/api/building/delete",
           data,
           { headers }
         );

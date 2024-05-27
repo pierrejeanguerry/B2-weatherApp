@@ -28,7 +28,7 @@ const AddBuildingScreen = () => {
       name_building: name,
     };
     try {
-      res = axios.post("http://192.168.137.1:8000/api/building/create", data, {
+      res = axios.post("http://176.190.38.210:8000/api/building/create", data, {
         headers,
       });
       console.log(await res);
