@@ -1,12 +1,4 @@
-import {
-  View,
-  TextInput,
-  Button,
-  Text,
-  StyleSheet,
-  Modal,
-  ActivityIndicator,
-} from "react-native";
+import { View, TextInput, Button, Text, StyleSheet } from "react-native";
 import { useState, useContext } from "react";
 import React from "react";
 import AuthContext from "./AuthContext";

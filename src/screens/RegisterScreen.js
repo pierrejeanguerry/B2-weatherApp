@@ -19,13 +19,13 @@ const RegisterScreen = () => {
       "keyboardDidShow",
       () => {
         setHide(true);
-      },
+      }
     );
     const keyboardDidHideListener = Keyboard.addListener(
       "keyboardDidHide",
       () => {
         setHide(false);
-      },
+      }
     );
     return () => {
       keyboardDidShowListener.remove();
@@ -47,7 +47,7 @@ const RegisterScreen = () => {
         >
           <Text style={styles.textButton}>Sign in</Text>
         </Pressable>
-        {hide ? null : (
+        {!hide && (
           <Image
             source={require("../../assets/logov1.png")}
             style={styles.logo}
