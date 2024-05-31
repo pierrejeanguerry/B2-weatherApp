@@ -14,6 +14,7 @@ import AddRoomScreen from "./src/screens/AddRoomScreen";
 import AddStationScreen from "./src/screens/AddStationScreen";
 import SelectBuildingScreen from "./src/screens/SelectBuildingScreen";
 import SelectRoomScreen from "./src/screens/SelectRoomScreen";
+import DashboardScreen from "./src/screens/DashboardScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -36,6 +37,7 @@ function AppNavigator() {
       <Stack.Screen name="AddStation" component={AddStationScreen} />
       <Stack.Screen name="SelectBuilding" component={SelectBuildingScreen} />
       <Stack.Screen name="SelectRoom" component={SelectRoomScreen} />
+      <Stack.Screen name="Dashboard" component={DashboardScreen} />
     </Stack.Navigator>
   );
 }
