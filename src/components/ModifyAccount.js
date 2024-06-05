@@ -11,6 +11,7 @@ import {
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 import LoadingModal from "./LoadingModal";
+import { API_URL } from 'react-native-dotenv'
 
 export default function ModifyAccount() {
   const [isLoading, setIsLoading] = useState(false);
@@ -51,7 +52,7 @@ export default function ModifyAccount() {
           currentPassword: currentPassword,
         };
         const res = await axios.put(
-          "http://176.190.38.210:8000/api/user/id/update",
+          `${API_URL}/api/user/id/update`,
           data,
           { headers: headers }
         );

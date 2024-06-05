@@ -4,6 +4,7 @@ import LoadingModal from "../components/LoadingModal";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
+import { API_URL } from 'react-native-dotenv';
 
 const AddBuildingScreen = () => {
   const [name, setName] = useState("");
@@ -28,7 +29,7 @@ const AddBuildingScreen = () => {
       name_building: name,
     };
     try {
-      res = axios.post("http://176.190.38.210:8000/api/building/create", data, {
+      res = axios.post(`${API_URL}/api/building/create`, data, {
         headers,
       });
       console.log(await res);

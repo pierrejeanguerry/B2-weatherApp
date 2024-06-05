@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import LoadingModal from "../components/LoadingModal";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
+import { API_URL } from 'react-native-dotenv';
 
 const AddRoomScreen = ({ route, navigation }) => {
   const { idBuilding } = route.params;
@@ -30,7 +31,7 @@ const AddRoomScreen = ({ route, navigation }) => {
       };
       console.log("data: ", data);
       try {
-        res = axios.post("http://176.190.38.210:8000/api/room/create", data, {
+        res = axios.post(`{API_URL}/api/room/create`, data, {
           headers,
         });
         console.log(res);

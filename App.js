@@ -15,6 +15,7 @@ import AddStationScreen from "./src/screens/AddStationScreen";
 import SelectBuildingScreen from "./src/screens/SelectBuildingScreen";
 import SelectRoomScreen from "./src/screens/SelectRoomScreen";
 import DashboardScreen from "./src/screens/DashboardScreen";
+import {API_URL} from "react-native-dotenv"
 
 const Stack = createNativeStackNavigator();
 
@@ -90,7 +91,7 @@ export default function App() {
           token_user: userToken,
         };
         axios
-          .post("http://176.190.38.210:8000/api/login/check", {}, { headers })
+          .post(`${API_URL}/api/login/check`, {}, { headers })
           .then((res) => {
             dispatch({ type: "RESTORE_TOKEN", token: userToken });
           })
@@ -116,7 +117,7 @@ export default function App() {
         };
         try {
           const res = await axios.post(
-            "http://176.190.38.210:8000/api/login",
+            `${API_URL}/api/login`,
             data,
             { headers }
           );
@@ -145,7 +146,7 @@ export default function App() {
                 password: password,
               };
               const res = await axios.post(
-                "http://176.190.38.210:8000/api/user/id/delete",
+                `${API_URL}/api/user/id/delete`,
                 data,
                 { headers: headers }
               );
@@ -173,7 +174,7 @@ export default function App() {
               };
 
               const res = await axios.post(
-                "http://176.190.38.210:8000/api/login/logout",
+                `${API_URL}/api/login/logout`,
                 {},
                 { headers }
               );
@@ -208,7 +209,7 @@ export default function App() {
             email: email,
             password: password,
           };
-          await axios.post("http://176.190.38.210:8000/api/register", data, {
+          await axios.post(`${API_URL}/api/register`, data, {
             headers,
           });
         } catch (error) {

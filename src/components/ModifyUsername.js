@@ -9,6 +9,7 @@ import {
   TextInput,
 } from "react-native";
 import * as SecureStore from "expo-secure-store";
+import { API_URL } from 'react-native-dotenv'
 
 import axios from "axios";
 
@@ -39,7 +40,7 @@ export default function ModifyUsername() {
           username: newUsername,
         };
         const res = await axios.post(
-          "http://176.190.38.210:8000/api/user/username/update",
+          `${API_URL}/api/user/username/update`,
           data,
           { headers: headers }
         );

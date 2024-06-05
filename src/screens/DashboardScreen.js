@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { LineChart } from "react-native-gifted-charts";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
+import { API_URL } from 'react-native-dotenv';
 const DashboardScreen = ({ navigation, route }) => {
   //   const { mac_address } = route.params;
   const [data, setData] = useState([]);
@@ -30,7 +31,7 @@ const DashboardScreen = ({ navigation, route }) => {
       };
       try {
         res = await axios.post(
-          "http://176.190.38.210:8000/api/reading/list",
+          `${API_URL}/api/reading/list`,
           data,
           { headers: headers }
         );

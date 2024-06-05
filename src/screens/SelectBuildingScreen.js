@@ -4,6 +4,8 @@ import * as SecureStore from "expo-secure-store";
 import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
 import ListComponent from "../components/ListComponent";
+import { API_URL } from 'react-native-dotenv';
+
 const SelectBuildingScreen = ({ navigation }) => {
   const [buildingData, setBuildingData] = useState(null);
   const getBuildingList = async () => {
@@ -22,7 +24,7 @@ const SelectBuildingScreen = ({ navigation }) => {
         token_user: userToken,
       };
       try {
-        res = await axios.get("http://176.190.38.210:8000/api/building/list", {
+        res = await axios.get(`${API_URL}/api/building/list`, {
           headers,
         });
 
@@ -68,7 +70,7 @@ const SelectBuildingScreen = ({ navigation }) => {
 
       try {
         res = await axios.post(
-          "http://176.190.38.210:8000/api/building/delete",
+          `${API_URL}/api/building/delete`,
           data,
           { headers }
         );

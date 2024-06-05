@@ -13,6 +13,7 @@ import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import { CameraView, Camera } from "expo-camera";
 import LoadingModal from "../components/LoadingModal";
+import { API_URL } from 'react-native-dotenv';
 
 const AddStationScreen = ({ navigation, route }) => {
   const { room_id } = route.params;
@@ -64,7 +65,7 @@ const AddStationScreen = ({ navigation, route }) => {
         mac_address: mac,
       };
       axios
-        .post("http://176.190.38.210:8000/api/station/create", data, {
+        .post(`${API_URL}/api/station/create`, data, {
           headers,
         })
         .then((res) => {

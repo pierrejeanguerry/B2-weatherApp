@@ -4,6 +4,7 @@ import * as SecureStore from "expo-secure-store";
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useState } from "react";
 import axios from "axios";
+import { API_URL } from 'react-native-dotenv';
 
 const SelectRoomScreen = ({ navigation, route }) => {
   const { building_id } = route.params;
@@ -29,7 +30,7 @@ const SelectRoomScreen = ({ navigation, route }) => {
       };
       try {
         res = await axios.post(
-          "http://176.190.38.210:8000/api/room/list",
+          `${API_URL}/api/room/list`,
           data,
           {
             headers,
@@ -78,7 +79,7 @@ const SelectRoomScreen = ({ navigation, route }) => {
 
       try {
         res = await axios.post(
-          "http://176.190.38.210:8000/api/room/delete",
+            `${API_URL}/api/room/delete`,
           data,
           {
             headers,
