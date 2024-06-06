@@ -4,8 +4,8 @@ import { LineChart } from "react-native-gifted-charts";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import { API_URL } from 'react-native-dotenv';
-const DashboardScreen = ({ navigation, route }) => {
-  //   const { mac_address } = route.params;
+const DashboardScreen = ({ route }) => {
+  const { mac } = route.params;
   const [data, setData] = useState([]);
   const [humidityData, setHumidityData] = useState([]);
   const [temperatureData, setTemperatureData] = useState([]);
@@ -27,7 +27,7 @@ const DashboardScreen = ({ navigation, route }) => {
         token_user: userToken,
       };
       const data = {
-        mac_address: "D4:8A:FC:A7:76:FC",
+        mac_address: mac,
       };
       try {
         res = await axios.post(

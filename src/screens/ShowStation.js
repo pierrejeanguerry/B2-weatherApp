@@ -1,14 +1,15 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View, FlatList } from 'react-native';
 import { API_URL } from 'react-native-dotenv';
 import { Dropdown } from 'react-native-element-dropdown';
 import * as SecureStore from "expo-secure-store";
+import Station from '../components/Station';
 
 export default function ShowStation() {
     const [buildingList, setBuildingList] = useState([]);
     const [roomList, setRoomList] = useState([]);
-    // const [stationList, setStationList] = useState([]);
+    const [stationList, setStationList] = useState([]);
     const [selectedBuilding, setSelectedBuilding] = useState();
     const [selectedRoom, setSelectedRoom] = useState();
 
@@ -21,7 +22,7 @@ export default function ShowStation() {
         }));
         setBuildingList(parsedData);
     }
-    
+
     async function parseRoom(data) {
         if (!data)
             return;
@@ -86,6 +87,37 @@ export default function ShowStation() {
             console.error(e);
         }
     }
+    
+    async function getAllStation() {
+
+        if (selectedBuilding == undefined)
+            return;
+        let userToken;
+
+        try {
+            userToken = await SecureStore.getItemAsync("userToken");
+        } catch (e) {
+            console.error("message", error);
+            return;
+        }
+        try {
+            const headers = {
+                'Connection': 'keep-alive',
+                'Content-Type': 'application/json',
+                "Accept": "application/json",
+                "token_user": userToken
+            }
+            const data = {
+                room_id: selectedRoom.value
+            }
+            console.log(selectedRoom);
+            res = await axios.post(`${API_URL}/api/station/list`, data, { headers });
+            setStationList(res.data.list_station);
+            console.log(res.data.list_station);
+        } catch (e) {
+            console.error(e);
+        }
+    }
 
     useEffect(() => {
         getAllBuilding();
@@ -94,6 +126,10 @@ export default function ShowStation() {
     useEffect(() => {
         getAllRoom();
     }, [selectedBuilding]);
+    
+    useEffect(() => {
+        getAllStation();
+    }, [selectedRoom]);
     return (
         <View>
             <Dropdown
@@ -131,6 +167,17 @@ export default function ShowStation() {
                     setSelectedRoom(item);
                 }}
             />
+            {stationList && (<FlatList
+//                style={styles.container}
+                data={stationList}
+                renderItem={({ item }) => (
+                    <Station
+                        name={item.name}
+                        state={item.state}
+                        mac={item.mac}
+                    />
+                )}
+            />)}
         </View>
     )
 }
