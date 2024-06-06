@@ -15,6 +15,7 @@ import AddStationScreen from "./src/screens/AddStationScreen";
 import SelectBuildingScreen from "./src/screens/SelectBuildingScreen";
 import SelectRoomScreen from "./src/screens/SelectRoomScreen";
 import DashboardScreen from "./src/screens/DashboardScreen";
+import ShowStationScreen from "./src/screens/ShowStation";
 import {API_URL} from "react-native-dotenv"
 
 const Stack = createNativeStackNavigator();
@@ -39,6 +40,7 @@ function AppNavigator() {
       <Stack.Screen name="SelectBuilding" component={SelectBuildingScreen} />
       <Stack.Screen name="SelectRoom" component={SelectRoomScreen} />
       <Stack.Screen name="Dashboard" component={DashboardScreen} />
+      <Stack.Screen name="ShowStation" component={ShowStationScreen} />
     </Stack.Navigator>
   );
 }
