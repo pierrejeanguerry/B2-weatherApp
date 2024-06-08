@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View, FlatList } from 'react-native';
+import { Button, StyleSheet, View, FlatList, Pressable, Text } from 'react-native';
 import { API_URL } from 'react-native-dotenv';
 import { Dropdown } from 'react-native-element-dropdown';
 import * as SecureStore from "expo-secure-store";
@@ -8,10 +8,8 @@ import Station from '../components/Station';
 
 export default function ShowStation() {
     const [buildingList, setBuildingList] = useState([]);
-    const [roomList, setRoomList] = useState([]);
     const [stationList, setStationList] = useState([]);
     const [selectedBuilding, setSelectedBuilding] = useState();
-    const [selectedRoom, setSelectedRoom] = useState();
 
     async function parseBuilding(data) {
         if (!data)
@@ -21,16 +19,6 @@ export default function ShowStation() {
             value: item.id
         }));
         setBuildingList(parsedData);
-    }
-
-    async function parseRoom(data) {
-        if (!data)
-            return;
-        const parsedData = data.map(item => ({
-            label: item.name,
-            value: item.id
-        }));
-        setRoomList(parsedData);
     }
 
     async function getAllBuilding() {
@@ -50,14 +38,15 @@ export default function ShowStation() {
                 "Accept": "application/json",
                 "token_user": userToken
             }
-            res = await axios.get(`${API_URL}/api/building/list`, { headers });
+            //API_URL=http://176.190.38.210:8000
+            res = await axios.get(`http://176.190.38.210:8000/api/building/list`, { headers });
             await parseBuilding(res.data.list_building);
         } catch (e) {
             console.error(e);
         }
     }
 
-    async function getAllRoom() {
+    async function getAllStation() {
 
         if (selectedBuilding == undefined)
             return;
@@ -79,39 +68,7 @@ export default function ShowStation() {
             const data = {
                 building_id: selectedBuilding.value
             }
-
-            res = await axios.post(`${API_URL}/api/room/list`, data, { headers });
-            await parseRoom(res.data.list_room);
-            console.log(res.data.list_room);
-        } catch (e) {
-            console.error(e);
-        }
-    }
-    
-    async function getAllStation() {
-
-        if (selectedBuilding == undefined)
-            return;
-        let userToken;
-
-        try {
-            userToken = await SecureStore.getItemAsync("userToken");
-        } catch (e) {
-            console.error("message", error);
-            return;
-        }
-        try {
-            const headers = {
-                'Connection': 'keep-alive',
-                'Content-Type': 'application/json',
-                "Accept": "application/json",
-                "token_user": userToken
-            }
-            const data = {
-                room_id: selectedRoom.value
-            }
-            console.log(selectedRoom);
-            res = await axios.post(`${API_URL}/api/station/list`, data, { headers });
+            res = await axios.post(`http://176.190.38.210:8000/api/station/list`, data, { headers });
             setStationList(res.data.list_station);
             console.log(res.data.list_station);
         } catch (e) {
@@ -124,20 +81,14 @@ export default function ShowStation() {
     }, []);
 
     useEffect(() => {
-        getAllRoom();
-    }, [selectedBuilding]);
-    
-    useEffect(() => {
         getAllStation();
-    }, [selectedRoom]);
+    }, [selectedBuilding]);
+
     return (
         <View>
+
             <Dropdown
                 style={styles.dropdown}
-                placeholderStyle={styles.placeholderStyle}
-                selectedTextStyle={styles.selectedTextStyle}
-                inputSearchStyle={styles.inputSearchStyle}
-                iconStyle={styles.iconStyle}
                 data={buildingList}
                 search
                 maxHeight={300}
@@ -150,35 +101,19 @@ export default function ShowStation() {
                     setSelectedBuilding(item);
                 }}
             />
-            <Dropdown
-                style={styles.dropdown}
-                placeholderStyle={styles.placeholderStyle}
-                selectedTextStyle={styles.selectedTextStyle}
-                inputSearchStyle={styles.inputSearchStyle}
-                iconStyle={styles.iconStyle}
-                data={roomList}
-                maxHeight={300}
-                labelField="label"
-                valueField="value"
-                placeholder="Select room"
-                searchPlaceholder="Search..."
-                value={selectedRoom}
-                onChange={item => {
-                    setSelectedRoom(item);
-                }}
-            />
-            {stationList && (<FlatList
-//                style={styles.container}
-                data={stationList}
-                renderItem={({ item }) => (
-                    <Station
-                        name={item.name}
-                        state={item.state}
-                        mac={item.mac}
-                    />
-                )}
-            />)}
-        </View>
+            {
+                stationList && (<FlatList
+                    data={stationList}
+                    renderItem={({ item }) => (
+                        <Station
+                            name={item.name}
+                            state={item.state}
+                            mac={item.mac}
+                        />
+                    )}
+                />)
+            }
+        </View >
     )
 }
 

@@ -24,7 +24,8 @@ const SelectBuildingScreen = ({ navigation }) => {
         token_user: userToken,
       };
       try {
-        res = await axios.get(`${API_URL}/api/building/list`, {
+//API_URL=http://176.190.38.210:8000
+        res = await axios.get(`http://176.190.38.210:8000/api/building/list`, {
           headers,
         });
 
@@ -45,7 +46,7 @@ const SelectBuildingScreen = ({ navigation }) => {
   );
 
   async function handleSelectBuilding(id) {
-    navigation.navigate("SelectRoom", { building_id: id });
+    navigation.navigate("AddStation", { building_id: id });
   }
 
   async function handleDeleteBuilding(id) {

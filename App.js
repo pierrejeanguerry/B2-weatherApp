@@ -5,17 +5,13 @@ import RegisterScreen from "./src/screens/RegisterScreen";
 import LoginScreen from "./src/screens/LoginScreen";
 import HomeScreen from "./src/screens/HomeScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import AuthContext from "./src/components/AuthContext";
 import SettingScreen from "./src/screens/SettingScreen";
-import { createStackNavigator } from "@react-navigation/stack";
 import AddBuildingScreen from "./src/screens/AddBuildingScreen";
-import AddRoomScreen from "./src/screens/AddRoomScreen";
 import AddStationScreen from "./src/screens/AddStationScreen";
 import SelectBuildingScreen from "./src/screens/SelectBuildingScreen";
-import SelectRoomScreen from "./src/screens/SelectRoomScreen";
 import DashboardScreen from "./src/screens/DashboardScreen";
-import ShowStationScreen from "./src/screens/ShowStation";
 import {API_URL} from "react-native-dotenv"
 
 const Stack = createNativeStackNavigator();
@@ -35,12 +31,9 @@ function AppNavigator() {
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Setting" component={SettingScreen} />
       <Stack.Screen name="AddBuilding" component={AddBuildingScreen} />
-      <Stack.Screen name="AddRoom" component={AddRoomScreen} />
       <Stack.Screen name="AddStation" component={AddStationScreen} />
       <Stack.Screen name="SelectBuilding" component={SelectBuildingScreen} />
-      <Stack.Screen name="SelectRoom" component={SelectRoomScreen} />
       <Stack.Screen name="Dashboard" component={DashboardScreen} />
-      <Stack.Screen name="ShowStation" component={ShowStationScreen} />
     </Stack.Navigator>
   );
 }

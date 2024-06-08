@@ -16,7 +16,7 @@ import LoadingModal from "../components/LoadingModal";
 import { API_URL } from 'react-native-dotenv';
 
 const AddStationScreen = ({ navigation, route }) => {
-  const { room_id } = route.params;
+  const { building_id } = route.params;
   const [name, setName] = useState("");
   const [mac, setMac] = useState("");
   const [hasPermission, setHasPermission] = useState(null);
@@ -60,7 +60,7 @@ const AddStationScreen = ({ navigation, route }) => {
         token_user: userToken,
       };
       const data = {
-        id_room: room_id,
+        id_building: building_id,
         name_station: name,
         mac_address: mac,
       };
