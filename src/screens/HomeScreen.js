@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, Button, Pressable } from "react-native";
+import { StyleSheet, View, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import ShowStation from "../components/ShowStation";
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
@@ -44,7 +44,8 @@ const styles = StyleSheet.create({
         width: "10%",
         height: "5%",
         padding: 10,
-        margin: 5
+        margin: 5,
+        position: "relative"
     },
     settings: {
         alignItems: 'center',
@@ -55,7 +56,9 @@ const styles = StyleSheet.create({
         width: "10%",
         height: "5%",
         padding: 10,
-        margin: 5
+        margin: 5,
+        position: "absolute",
+        right: 5
     },
     text:{
         color:'white'

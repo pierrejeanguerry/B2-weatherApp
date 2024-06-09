@@ -19,7 +19,7 @@ const AddStationScreen = ({ navigation, route }) => {
   const { building_id } = route.params;
   const [name, setName] = useState("");
   const [mac, setMac] = useState("");
-  const [hasPermission, setHasPermission] = useState(null);
+  const [hasPermission, setHasPermission] = useState(Camera.requestCameraPermissionsAsync());
   const [toScan, setToScan] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [hide, setHide] = useState(false);
@@ -97,7 +97,7 @@ const AddStationScreen = ({ navigation, route }) => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View>
+      <View style={styles.container}>
         {toScan && (
           <>
             <CameraView
@@ -111,14 +111,14 @@ const AddStationScreen = ({ navigation, route }) => {
               style={styles.cancelButton}
               onPress={() => setToScan(false)}
             >
-              <Text style={styles.textCancel}>Cancel</Text>
+              <Text style={styles.textCancel}>Annuler</Text>
             </Pressable>
           </>
         )}
-        <View style={styles.container}>
+        <View style={styles.containerInput}>
           {!toScan && (
             <>
-              <Text style={styles.textButton}>Station name</Text>
+              <Text style={styles.textButton}>Entrer le nom de la station</Text>
               <TextInput
                 style={styles.input}
                 placeholder="station1"
@@ -127,33 +127,31 @@ const AddStationScreen = ({ navigation, route }) => {
                 value={name}
               />
               {hasPermission ? (
-                <Pressable style={styles.button} onPress={handleToggleQrCode}>
-                  <Text style={styles.textButton}>Tap to Scan QRcode</Text>
+                <Pressable style={styles.camButton} onPress={handleToggleQrCode}>
+                  <Text style={styles.textButton}>Scanner le QRcode</Text>
                 </Pressable>
               ) : (
                 <>
-                  <Pressable onPress={getCameraPermissions}>
-                    <Text style={styles.textButton}>Authorize camera</Text>
+                  <Pressable onPress={getCameraPermissions} style={styles.camButton}>
+                    <Text style={styles.textButton}>Authoriser la camera</Text>
                   </Pressable>
                 </>
               )}
 
               <TextInput
                 style={styles.input}
-                placeholder="mac_address"
+                placeholder="adresse mac"
                 placeholderTextColor={"gray"}
-                onChangeText={(newName) => setName(newName)}
+                onChangeText={(newMac) => setMac(newMac)}
                 value={mac}
               />
 
               {errMessage && <Text>{errMessage}</Text>}
-              <Pressable
+              <Button
+                title="Ajouter"
                 onPress={handleAddStation}
-                style={styles.button}
-                disabled={!name.trim() && !mac.trim()}
-              >
-                <Text style={styles.textButton}>Submit</Text>
-              </Pressable>
+                disabled={!name.trim() || !mac.trim()}
+              />
             </>
           )}
         </View>
@@ -178,7 +176,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: "70%",
   },
-  container: {
+container: {
+    backgroundColor: "#181818",
+    width: "100%",
+    height: "100%",
+},
+  containerInput: {
+      marginTop: 20,
     height: "100%",
     // backgroundColor: "#181818",
     padding: "auto",
@@ -186,10 +190,21 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   textButton: {
-    color: "black",
+    color: "white",
     fontSize: 14,
     fontWeight: "bold",
     textAlign: "center",
+  },
+  camButton: {
+      marginBottom: 20,
+    color: "white",
+    width: "65%",
+    alignItems: "center",
+    alignSelf: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    backgroundColor: "green",
   },
   button: {
     color: "white",
@@ -221,12 +236,14 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     color: "white",
-    width: "65%",
+    width: "100%",
     alignSelf: "center",
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 4,
     backgroundColor: "red",
+      position: "absolute",
+      bottom: 0
   },
   textCancel: {
     color: "white",

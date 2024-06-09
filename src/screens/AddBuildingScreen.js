@@ -42,16 +42,15 @@ const AddBuildingScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Building Name</Text>
       <TextInput
         style={styles.input}
-        placeholder="building1"
+        placeholder="nom de batiment..."
         placeholderTextColor={"gray"}
         onChangeText={(newName) => setName(newName)}
         value={name}
       />
       <Button
-        title="Submit"
+        title="Ajouter"
         onPress={handleAddBuilding}
         color={"#227138"}
         disabled={!name.trim()}
@@ -65,6 +64,9 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "black",
+      width: "100%",
+      height: "100%",
   },
   title: {
     fontSize: 24,
@@ -77,6 +79,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
     padding: 10,
+    marginTop: 20,
     marginBottom: 20,
     width: "70%",
   },

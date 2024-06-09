@@ -1,10 +1,10 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { Button, StyleSheet, View, FlatList, Pressable, Text } from 'react-native';
-import { API_URL } from 'react-native-dotenv';
+import { StyleSheet, View, FlatList, Text} from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import * as SecureStore from "expo-secure-store";
 import Station from '../components/Station';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function ShowStation() {
     const [buildingList, setBuildingList] = useState([]);
@@ -76,9 +76,12 @@ export default function ShowStation() {
         }
     }
 
-    useEffect(() => {
+  useFocusEffect(
+    React.useCallback(() => {
         getAllBuilding();
-    }, []);
+      return () => {};
+    }, [])
+  );
 
     useEffect(() => {
         getAllStation();
@@ -86,16 +89,21 @@ export default function ShowStation() {
 
     return (
         <View>
-
             <Dropdown
                 style={styles.dropdown}
                 data={buildingList}
-                search
+                placeholderStyle={styles.placeholderStyle}
+                selectedTextStyle={styles.selectedTextStyle}
+                inputSearchStyle={styles.inputSearchStyle}
+                containerStyle={styles.dropdown_container}
+                itemTextStyle={styles.dropdown_label}
+                activeColor="darkgray"
+                search={true}
                 maxHeight={300}
                 labelField="label"
                 valueField="value"
-                placeholder="Select building"
-                searchPlaceholder="Search..."
+                placeholder="Selectionner un batiment"
+                searchPlaceholder="Rechercher..."
                 value={selectedBuilding}
                 onChange={item => {
                     setSelectedBuilding(item);
@@ -118,57 +126,39 @@ export default function ShowStation() {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        alignItems: "center",
-        justifyContent: "center",
+    dropdown: {
+        color: "white",
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 0.5,
+        borderRadius: 8,
+        paddingHorizontal: 8,
+        width: "95%",
+        alignSelf: "center",
+        backgroundColor: "black"
     },
-    title: {
-        fontSize: 24,
-        fontWeight: "bold",
-        marginBottom: 20,
+    dropdown_container: {
+        backgroundColor: "black"
+    },
+    dropdown_label: {
+        color: "white"
+    },
+    placeholderStyle: {
+        fontSize: 16,
         color: "white",
     },
-    input: {
-        color: "white",
-        borderWidth: 1,
-        borderColor: "#ccc",
-        padding: 10,
-        marginBottom: 20,
-        width: "70%",
-    },
-    button: {
-        width: "40%",
-        alignItems: "center",
-        justifyContent: "center",
-        paddingVertical: 12,
-        paddingHorizontal: 32,
-        borderRadius: 4,
-        backgroundColor: "green",
-    },
-    error: {
-        paddingBottom: 10,
-        textAlign: "left",
-        color: "red",
-        fontWeight: "bold",
-    },
-    modalContainer: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "rgba(0, 0, 0, 0.5)", // Fond gris foncé semi-transparent
-    },
-    passwordContainer: {
-        flexDirection: "row", // Pour aligner l'input et le bouton sur la même ligne
-        alignItems: "center",
-        marginBottom: 20,
-        width: "70%",
+    selectedTextStyle: {
+        fontSize: 16,
         color: "white",
     },
-    passwordInput: {
-        flex: 1,
+    inputSearchStyle: {
+        height: 40,
+        fontSize: 16,
         color: "white",
-        borderWidth: 1,
-        borderColor: "#ccc",
-        padding: 10,
     },
+    empty: {
+        color: "cyan",
+        fontSize: 25,
+        fontWeight: "500"
+    }
 });
