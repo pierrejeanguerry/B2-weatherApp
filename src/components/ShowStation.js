@@ -70,7 +70,6 @@ export default function ShowStation() {
             }
             res = await axios.post(`http://176.190.38.210:8000/api/station/list`, data, { headers });
             setStationList(res.data.list_station);
-            console.log(res.data.list_station);
         } catch (e) {
             console.error(e);
         }

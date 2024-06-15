@@ -31,7 +31,8 @@ export default function Station({ name, state, mac, buildingList, selectedBuildi
             }
             const data = {
                 'newBuilding_id': (!newSelectedBuilding || newSelectedBuilding == selectedBuilding) ? 0 : newSelectedBuilding,
-                'new_name': newName
+                'new_name': newName,
+                'mac_address': mac
             }
             //API_URL=http://176.190.38.210:8000
             res = await axios.post(`http://176.190.38.210:8000/api/station/update`, data, { headers });
