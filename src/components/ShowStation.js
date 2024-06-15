@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View, FlatList, Text} from 'react-native';
+import { StyleSheet, View, FlatList, Text } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import * as SecureStore from "expo-secure-store";
 import Station from '../components/Station';
@@ -76,12 +76,12 @@ export default function ShowStation() {
         }
     }
 
-  useFocusEffect(
-    React.useCallback(() => {
-        getAllBuilding();
-      return () => {};
-    }, [])
-  );
+    useFocusEffect(
+        React.useCallback(() => {
+            getAllBuilding();
+            return () => { };
+        }, [])
+    );
 
     useEffect(() => {
         getAllStation();
@@ -117,6 +117,8 @@ export default function ShowStation() {
                             name={item.name}
                             state={item.state}
                             mac={item.mac}
+                            buildingList={buildingList}
+                            selectedBuilding={selectedBuilding}
                         />
                     )}
                 />)

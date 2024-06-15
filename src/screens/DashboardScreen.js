@@ -5,6 +5,7 @@ import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import { API_URL } from 'react-native-dotenv';
 import { Dropdown } from "react-native-element-dropdown";
+import LoadingModal from "../components/LoadingModal";
 const DashboardScreen = ({ route }) => {
     const { mac } = route.params;
     const { name } = route.params;
@@ -12,9 +13,13 @@ const DashboardScreen = ({ route }) => {
     const [humidityData, setHumidityData] = useState([]);
     const [temperatureData, setTemperatureData] = useState([]);
     const [selectedDate, setSelectedDate] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
 
     async function getReadings() {
+        setIsLoading(true);
         let userToken;
+        if (selectedDate == 0)
+            return;
         try {
             userToken = await SecureStore.getItemAsync("userToken");
         } catch (e) {
@@ -32,14 +37,15 @@ const DashboardScreen = ({ route }) => {
             };
             try {
                 res = await axios.post(
-                    `${API_URL}/api/reading/list`,
+                    `${API_URL}/api/reading/${selectedDate}/list`,
                     data,
                     { headers: headers }
                 );
                 setData(res.data.list_readings);
                 await parseData();
+                console.log(res.data.list_readings);
             } catch (error) {
-                console.error("Erreur lors de la récupération du token :", error);
+                console.error("Erreur lors de la récupération du token :", error.message);
             }
         }
     }
@@ -66,7 +72,7 @@ const DashboardScreen = ({ route }) => {
     }
 
     async function parseData() {
-        
+
         const tempData = data.map((item) => ({
             label: (selectedDate == 365 ? isoToYear(item.date) : selectedDate == 1 ? isoToHour(item.date) : isoToDay(item.date)),
             value: item.temperature,
@@ -110,42 +116,47 @@ const DashboardScreen = ({ route }) => {
                     setSelectedDate(item.value);
                 }}
             />
-            <Text>Temperature</Text>
-            <LineChart
-                thickness={3}
-                color="#07BAD1"
-                yAxisTextStyle={{ color: "white" }}
-                xAxisLabelTextStyle={{ color: "white" }}
-                backgroundColor="#181818"
-                rulesColor="gray"
-                rulesType="dotted"
-                yAxisColor="lightgray"
-                xAxisColor="lightgray"
-                spacing={selectedDate == 365 ? 80 : 50}
-                data={temperatureData}
-                scrollToEnd
-            />
-            <Text>Humidité</Text>
-            <LineChart
-                thickness={3}
-                color="#07BAD1"
-                areaChart
-                yAxisTextStyle={{ color: "lightgray" }}
-                xAxisLabelTextStyle={{ color: "white" }}
-                hideDataPoints
-                startFillColor={"rgb(84,219,234)"}
-                endFillColor={"red"}
-                startOpacity={0.4}
-                endOpacity={0.4}
-                backgroundColor="#181818"
-                rulesColor="gray"
-                rulesType="dotted"
-                yAxisColor="lightgray"
-                xAxisColor="lightgray"
-                data={humidityData}
-                spacing={selectedDate == 365 ? 80 : 50}
-                scrollToEnd
-            />
+            {selectedDate != 0 && (
+                <View>
+                    <Text>Temperature</Text>
+                    <LineChart
+                        thickness={3}
+                        color="#07BAD1"
+                        yAxisTextStyle={{ color: "white" }}
+                        xAxisLabelTextStyle={{ color: "white" }}
+                        backgroundColor="#181818"
+                        rulesColor="gray"
+                        rulesType="dotted"
+                        yAxisColor="lightgray"
+                        xAxisColor="lightgray"
+                        spacing={selectedDate == 365 ? 80 : 50}
+                        data={temperatureData}
+                        scrollToEnd
+                    />
+                    <Text>Humidité</Text>
+                    <LineChart
+                        thickness={3}
+                        color="#07BAD1"
+                        areaChart
+                        yAxisTextStyle={{ color: "lightgray" }}
+                        xAxisLabelTextStyle={{ color: "white" }}
+                        hideDataPoints
+                        startFillColor={"rgb(84,219,234)"}
+                        endFillColor={"red"}
+                        startOpacity={0.4}
+                        endOpacity={0.4}
+                        backgroundColor="#181818"
+                        rulesColor="gray"
+                        rulesType="dotted"
+                        yAxisColor="lightgray"
+                        xAxisColor="lightgray"
+                        data={humidityData}
+                        spacing={selectedDate == 365 ? 80 : 50}
+                        scrollToEnd
+                    />
+                </View>
+            )}
+        <LoadingModal isLoading={isLoading}/>
         </View>
     );
 };
