@@ -14,6 +14,7 @@ import SelectBuildingScreen from "./src/screens/SelectBuildingScreen";
 import DashboardScreen from "./src/screens/DashboardScreen";
 import { API_URL } from "react-native-dotenv"
 import { LogBox } from 'react-native';
+import OpeningScreen from "./src/screens/OpeningScreen";
 LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
 LogBox.ignoreAllLogs();//Ignore all log notification
 
@@ -56,6 +57,7 @@ function AppNavigator() {
                 },
             }}
         >
+            <Stack.Screen name="Opening" component={OpeningScreen} options={{ headerShown: false}} />
             <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Accueil' }} />
             <Stack.Screen name="Setting" component={SettingScreen} options={{ title: 'Paramètres' }} />
             <Stack.Screen name="AddBuilding" component={AddBuildingScreen} options={{ title: 'Ajouter un Batiment' }} />
