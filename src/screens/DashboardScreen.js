@@ -69,8 +69,6 @@ const DashboardScreen = ({ route }) => {
         const filteredData = await filterData(day);
         setPressureData(filteredData.at(0).pressure);
         setAltitudeData(filteredData.at(0).altitude);
-        console.log(pressureData);
-        console.log(altitudeData);
         filteredData.forEach(item => {
             const date = new Date(item.date);
             let key;
