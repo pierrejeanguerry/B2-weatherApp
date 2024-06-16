@@ -11,6 +11,7 @@ import {
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 import LoadingModal from "./LoadingModal";
+import { API_URL } from 'react-native-dotenv'
 
 export default function ModifyAccount() {
   const [isLoading, setIsLoading] = useState(false);
@@ -32,14 +33,14 @@ export default function ModifyAccount() {
       userToken = await SecureStore.getItemAsync("userToken");
       try {
         if (password !== repeatPassword)
-          throw new Error("Passwords don't match.");
+          throw new Error("Les mots de passe ne correspondent pas");
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{10,20}$/;
         if (!passwordRegex.test(password))
           throw new Error(
             "Password is not strong enough. At least 1 lowercase and uppercase character, 1 number, between 10 and 20 characters."
           );
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) throw new Error("Email is not valid.");
+        if (!emailRegex.test(email)) throw new Error("Email non valide");
         const headers = {
           "Content-Type": "application/json",
           Accept: "application/json",
@@ -51,7 +52,7 @@ export default function ModifyAccount() {
           currentPassword: currentPassword,
         };
         const res = await axios.put(
-          "http://176.190.38.210:8000/api/user/id/update",
+          `${API_URL}/api/user/id/update`,
           data,
           { headers: headers }
         );
@@ -84,14 +85,14 @@ export default function ModifyAccount() {
         style={styles.button}
         onPress={() => setModifyAccount(!modifyAccount)}
       >
-        <Text style={styles.textButton}>Change Account Id</Text>
+        <Text style={styles.textButton}>Modifier les identifiants</Text>
       </Pressable>
       <Modal visible={modifyAccount} transparent={true} animationType="fade">
         <View style={styles.modalContainer}>
           <Pressable style={styles.close} onPress={handleClose}>
-            <Text style={styles.textButtonClose}>Close</Text>
+            <Text style={styles.textButtonClose}>Fermer</Text>
           </Pressable>
-          <Text style={styles.title}>Change account Ids</Text>
+          <Text style={styles.title}>Modifier les identifiants</Text>
           <TextInput
             style={styles.input}
             placeholder="Email"
@@ -102,14 +103,14 @@ export default function ModifyAccount() {
           <View style={styles.passwordContainer}>
             <TextInput
               style={styles.passwordInput}
-              placeholder="Current password"
+              placeholder="Mot de passe actuel"
               placeholderTextColor={"gray"}
               onChangeText={(newLogin) => setCurrentPassword(newLogin)}
               value={currentPassword}
               secureTextEntry={!showCurrentPassword}
             />
             <Button
-              title={showCurrentPassword ? "Hide" : "Show"}
+              title={showCurrentPassword ? "Cacher" : "Afficher"}
               onPress={() => setShowCurrentPassword(!showCurrentPassword)}
               color={"gray"}
             />
@@ -117,14 +118,14 @@ export default function ModifyAccount() {
           <View style={styles.passwordContainer}>
             <TextInput
               style={styles.passwordInput}
-              placeholder="Password"
+              placeholder="Mot de passe"
               placeholderTextColor={"gray"}
               onChangeText={(newLogin) => setPassword(newLogin)}
               value={password}
               secureTextEntry={!showPassword}
             />
             <Button
-              title={showPassword ? "Hide" : "Show"}
+              title={showPassword ? "Cacher" : "Afficher"}
               onPress={() => setShowPassword(!showPassword)}
               color={"gray"}
             />
@@ -132,14 +133,14 @@ export default function ModifyAccount() {
           <View style={styles.passwordContainer}>
             <TextInput
               style={styles.passwordInput}
-              placeholder="Repeat password"
+              placeholder="Répéter le mot de passe"
               placeholderTextColor={"gray"}
               onChangeText={(newLogin) => setRepeatPassword(newLogin)}
               value={repeatPassword}
               secureTextEntry={!showRepeatPassword}
             />
             <Button
-              title={showRepeatPassword ? "Hide" : "Show"}
+              title={showRepeatPassword ? "Cacher" : "Afficher"}
               onPress={() => setShowRepeatPassword(!showRepeatPassword)}
               color={"gray"}
             />
@@ -148,7 +149,7 @@ export default function ModifyAccount() {
             <Text style={styles.error}>{errorMessage}</Text>
           ) : null}
           <Button
-            title="Submit"
+            title="Envoyer"
             onPress={handleUpdateId}
             color={"#226871"}
             disabled={

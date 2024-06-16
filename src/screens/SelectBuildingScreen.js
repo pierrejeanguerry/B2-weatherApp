@@ -4,6 +4,8 @@ import * as SecureStore from "expo-secure-store";
 import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
 import ListComponent from "../components/ListComponent";
+import { API_URL } from 'react-native-dotenv';
+
 const SelectBuildingScreen = ({ navigation }) => {
   const [buildingData, setBuildingData] = useState(null);
   const getBuildingList = async () => {
@@ -22,7 +24,8 @@ const SelectBuildingScreen = ({ navigation }) => {
         token_user: userToken,
       };
       try {
-        res = await axios.get("http://176.190.38.210:8000/api/building/list", {
+//API_URL=http://176.190.38.210:8000
+        res = await axios.get(`http://176.190.38.210:8000/api/building/list`, {
           headers,
         });
 
@@ -43,7 +46,7 @@ const SelectBuildingScreen = ({ navigation }) => {
   );
 
   async function handleSelectBuilding(id) {
-    navigation.navigate("SelectRoom", { building_id: id });
+    navigation.navigate("AddStation", { building_id: id });
   }
 
   async function handleDeleteBuilding(id) {
@@ -68,7 +71,7 @@ const SelectBuildingScreen = ({ navigation }) => {
 
       try {
         res = await axios.post(
-          "http://176.190.38.210:8000/api/building/delete",
+          `${API_URL}/api/building/delete`,
           data,
           { headers }
         );
@@ -86,16 +89,15 @@ const SelectBuildingScreen = ({ navigation }) => {
   }
 
   return (
-    <View>
-      <Text style={styles.title}>Select a building</Text>
+    <View style={styles.container}>
       <Pressable
         onPress={() => navigation.navigate("AddBuilding")}
         style={styles.button}
       >
-        <Text>Add building</Text>
+        <Text style={styles.textButton}>Ajouter un batiment</Text>
       </Pressable>
       <FlatList
-        style={styles.container}
+        style={styles.list}
         data={buildingData}
         renderItem={({ item }) => (
           <ListComponent
@@ -110,11 +112,6 @@ const SelectBuildingScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  list: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-  },
   input: {
     color: "white",
     borderWidth: 1,
@@ -123,14 +120,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: "70%",
   },
-  container: {
+  list: {
     height: "100%",
     padding: "auto",
     display: "flex",
     gap: 10,
   },
   textButton: {
-    color: "black",
+    color: "white",
     fontSize: 14,
     fontWeight: "bold",
     textAlign: "center",
@@ -140,6 +137,7 @@ const styles = StyleSheet.create({
     width: "40%",
     marginTop: "5%",
     marginRight: "5%",
+      marginBottom: 30,
     alignItems: "center",
     alignSelf: "flex-end",
     paddingVertical: 12,
@@ -147,24 +145,9 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: "#226871",
   },
-  item: {
-    backgroundColor: "white",
-    padding: 10,
-    fontSize: 18,
-    height: 44,
-    borderRadius: 4,
-    color: "black",
-    width: "65%",
-    margin: 4,
-    justifyContent: "center",
-  },
-  delete: {
-    backgroundColor: "red",
-    width: "25%",
-    borderRadius: 4,
-    margin: 4,
-    justifyContent: "center",
-  },
+    container: {
+        backgroundColor: "black"
+    }
 });
 
 export default SelectBuildingScreen;

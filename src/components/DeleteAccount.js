@@ -40,25 +40,25 @@ export default function DeleteAccount() {
   return (
     <View>
       <Pressable style={styles.button} onPress={() => setDeleteAccount(true)}>
-        <Text style={styles.textButton}>Delete Account</Text>
+        <Text style={styles.textButton}>Supprimer le compte</Text>
       </Pressable>
       <Modal visible={deleteAccount} transparent={true} animationType="fade">
         <View style={styles.modalContainer}>
           <Pressable style={styles.close} onPress={handleClose}>
-            <Text style={styles.textButtonClose}>Close</Text>
+            <Text style={styles.textButtonClose}>Fermer</Text>
           </Pressable>
-          <Text style={styles.title}>Delete account</Text>
+          <Text style={styles.title}>Supprimer le compte</Text>
           <View style={styles.passwordContainer}>
             <TextInput
               style={styles.passwordInput}
-              placeholder="Current password"
+              placeholder="Mot de passe"
               placeholderTextColor={"gray"}
               onChangeText={(newLogin) => setPassword(newLogin)}
               value={password}
               secureTextEntry={!showPassword}
             />
             <Button
-              title={showPassword ? "Hide" : "Show"}
+              title={showPassword ? "Cacher" : "Afficher"}
               onPress={() => setShowPassword(!showPassword)}
               color={"gray"}
             />
@@ -68,7 +68,7 @@ export default function DeleteAccount() {
           ) : null}
 
           <Button
-            title="Submit"
+            title="Supprimer"
             onPress={handleDeleteAccount}
             color={"#226871"}
             disabled={!password.trim()}
@@ -101,12 +101,11 @@ const styles = StyleSheet.create({
   },
   button: {
     color: "white",
-    width: "40%",
-    marginTop: "5%",
+    width: "80%",
     marginBottom: 30,
     alignItems: "center",
-    alignSelf: "flex-end",
-    paddingVertical: 12,
+    alignSelf: "center",
+    paddingVertical: 16,
     paddingHorizontal: 32,
     borderRadius: 4,
     backgroundColor: "#226871",
