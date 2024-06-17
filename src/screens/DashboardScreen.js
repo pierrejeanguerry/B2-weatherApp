@@ -168,7 +168,6 @@ const DashboardScreen = ({ route }) => {
                     <Text style={styles.subtitle}>Temperature</Text>
                     <LineChart
                         thickness={3}
-                        initialSpacing={0}
                         color="#07BAD1"
                         areaChart
                         startFillColor={"red"}
@@ -197,7 +196,7 @@ const DashboardScreen = ({ route }) => {
                         yAxisTextStyle={{ color: "lightgray" }}
                         xAxisLabelTextStyle={{ color: "white" }}
                         formatYLabel={(label) => `${label}%`}
-                        hideDataPoints
+                        showXAxisIndices="true"
                         startFillColor={"rgb(84,219,234)"}
                         endFillColor={"red"}
                         startOpacity={0.4}
