@@ -40,7 +40,7 @@ export default function ShowStation() {
                 "token_user": userToken
             }
             //API_URL=http://176.190.38.210:8000
-            res = await axios.get(`${API_URL}/api/building/list`, { headers });
+            res = await axios.get(`${API_URL}/api/buildings`, { headers });
             await parseBuilding(res.data.list_building);
         } catch (e) {
             console.error(e);
@@ -48,7 +48,7 @@ export default function ShowStation() {
     }
 
     function handleUpdateStation() {
-            getAllStation();
+        getAllStation();
     }
 
     async function getAllStation() {
@@ -70,10 +70,7 @@ export default function ShowStation() {
                 "Accept": "application/json",
                 "token_user": userToken
             }
-            const data = {
-                building_id: selectedBuilding.value
-            }
-            res = await axios.post(`${API_URL}/api/station/list`, data, { headers });
+            res = await axios.get(`${API_URL}/api/stations/${selectedBuilding.value}`, { headers });
             setStationList(res.data.list_station);
         } catch (e) {
             console.error(e);

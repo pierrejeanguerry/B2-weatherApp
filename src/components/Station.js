@@ -24,6 +24,7 @@ export default function Station({ name, state, mac, buildingList, selectedBuildi
             console.error("message", error);
             return;
         }
+        id = await SecureStore.getItemAsync("user_id");
         setIsLoading(true);
         try {
             const headers = {
@@ -37,10 +38,7 @@ export default function Station({ name, state, mac, buildingList, selectedBuildi
                 'new_name': newName,
                 'mac_address': mac
             }
-        console.log(headers);
-        console.log(data);
-            //API_URL=http://176.190.38.210:8000
-            res = await axios.post(`${API_URL}/api/station/update`, data, { headers });
+            res = await axios.patch(`${API_URL}/api/stations/${id}`, data, { headers });
             setShowModal(false);
         } catch (e) {
             console.error(e);

@@ -8,7 +8,7 @@ import { Dropdown } from "react-native-element-dropdown";
 import LoadingModal from "../components/LoadingModal";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 const DashboardScreen = ({ route }) => {
-    const { mac } = route.params;
+    const { id } = route.params;
     const { name } = route.params;
     const [data, setData] = useState([]);
     const [humidityData, setHumidityData] = useState([]);
@@ -40,13 +40,15 @@ const DashboardScreen = ({ route }) => {
                 token_user: userToken,
             };
             const data = {
-                mac_address: mac,
+                days: 365,
             };
             try {
-                res = await axios.post(
-                    `${API_URL}/api/reading/365/list`,
-                    data,
-                    { headers: headers }
+                res = await axios.get(
+                    `${API_URL}/api/readings/${id}`,
+                    {
+                        data: data,
+                        headers: headers
+                    }
                 );
                 setData(res.data.list_readings);
             } catch (error) {

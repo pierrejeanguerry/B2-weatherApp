@@ -65,7 +65,7 @@ const AddStationScreen = ({ navigation, route }) => {
         mac_address: mac,
       };
       axios
-        .post(`${API_URL}/api/station/create`, data, {
+        .post(`${API_URL}/api/stations`, data, {
           headers,
         })
         .then((res) => {

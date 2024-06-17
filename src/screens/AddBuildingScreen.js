@@ -29,7 +29,7 @@ const AddBuildingScreen = () => {
       name_building: name,
     };
     try {
-      res = axios.post(`${API_URL}/api/building/create`, data, {
+      res = axios.post(`${API_URL}/api/buildings`, data, {
         headers,
       });
       console.log(await res);

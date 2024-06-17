@@ -57,7 +57,7 @@ function AppNavigator() {
                 },
             }}
         >
-            <Stack.Screen name="Opening" component={OpeningScreen} options={{ headerShown: false}} />
+            <Stack.Screen name="Opening" component={OpeningScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Accueil' }} />
             <Stack.Screen name="Setting" component={SettingScreen} options={{ title: 'Paramètres' }} />
             <Stack.Screen name="AddBuilding" component={AddBuildingScreen} options={{ title: 'Ajouter un Batiment' }} />
@@ -140,7 +140,7 @@ export default function App() {
                     username: login,
                     password: password,
                 };
-                            console.log(`${API_URL}`);
+                console.log(`${API_URL}`);
                 try {
                     const res = await axios.post(
                         `${API_URL}/api/login`,
@@ -151,6 +151,7 @@ export default function App() {
                         SecureStore.setItemAsync("userToken", res.data.token_user),
                         SecureStore.setItemAsync("username", res.data.username),
                         SecureStore.setItemAsync("email", res.data.email),
+                        SecureStore.setItemAsync("user_id", res.data.id),
                     ]);
                     dispatch({ type: "SIGN_IN", token: res.data.token_user });
                 } catch (error) {
@@ -161,6 +162,7 @@ export default function App() {
                 let userToken;
                 try {
                     userToken = await SecureStore.getItemAsync("userToken");
+                    id = await SecureStore.getItemAsync("user_id");
                     try {
                         if (userToken) {
                             const headers = {
@@ -171,10 +173,12 @@ export default function App() {
                             const data = {
                                 password: password,
                             };
-                            const res = await axios.post(
-                                `${API_URL}/api/user/id/delete`,
-                                data,
-                                { headers: headers }
+                            const res = await axios.delete(
+                                `${API_URL}/api/users/${id}`,
+                                {
+                                    data: data,
+                                    headers: headers
+                                }
                             );
                             await SecureStore.deleteItemAsync("userToken");
                             dispatch({ type: "SIGN_OUT" });
@@ -235,7 +239,7 @@ export default function App() {
                         email: email,
                         password: password,
                     };
-                    await axios.post(`${API_URL}/api/register`, data, {
+                    await axios.post(`${API_URL}/api/users`, data, {
                         headers,
                     });
                 } catch (error) {
