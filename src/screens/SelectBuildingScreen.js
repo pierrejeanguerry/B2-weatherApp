@@ -25,7 +25,7 @@ const SelectBuildingScreen = ({ navigation }) => {
       };
       try {
 //API_URL=http://176.190.38.210:8000
-        res = await axios.get(`http://176.190.38.210:8000/api/building/list`, {
+        res = await axios.get(`${API_URL}/api/building/list`, {
           headers,
         });
 

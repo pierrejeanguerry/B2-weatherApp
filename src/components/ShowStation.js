@@ -1,10 +1,11 @@
-import axios from 'axios';
+import axios, { getAdapter } from 'axios';
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, FlatList, Text } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import * as SecureStore from "expo-secure-store";
 import Station from '../components/Station';
 import { useFocusEffect } from '@react-navigation/native';
+import { API_URL } from "react-native-dotenv"
 
 export default function ShowStation() {
     const [buildingList, setBuildingList] = useState([]);
@@ -39,11 +40,15 @@ export default function ShowStation() {
                 "token_user": userToken
             }
             //API_URL=http://176.190.38.210:8000
-            res = await axios.get(`http://176.190.38.210:8000/api/building/list`, { headers });
+            res = await axios.get(`${API_URL}/api/building/list`, { headers });
             await parseBuilding(res.data.list_building);
         } catch (e) {
             console.error(e);
         }
+    }
+
+    function handleUpdateStation() {
+            getAllStation();
     }
 
     async function getAllStation() {
@@ -68,7 +73,7 @@ export default function ShowStation() {
             const data = {
                 building_id: selectedBuilding.value
             }
-            res = await axios.post(`http://176.190.38.210:8000/api/station/list`, data, { headers });
+            res = await axios.post(`${API_URL}/api/station/list`, data, { headers });
             setStationList(res.data.list_station);
         } catch (e) {
             console.error(e);
@@ -118,6 +123,7 @@ export default function ShowStation() {
                             mac={item.mac}
                             buildingList={buildingList}
                             selectedBuilding={selectedBuilding}
+                            handleUpdateStation={() => handleUpdateStation()}
                         />
                     )}
                 />)

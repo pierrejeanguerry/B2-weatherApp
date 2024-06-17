@@ -140,6 +140,7 @@ export default function App() {
                     username: login,
                     password: password,
                 };
+                            console.log(`${API_URL}`);
                 try {
                     const res = await axios.post(
                         `${API_URL}/api/login`,

@@ -5,8 +5,11 @@ import { React, useState } from 'react';
 import { TextInput, StyleSheet, Pressable, View, Text, Modal, Button } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import LoadingModal from './LoadingModal';
+import * as SecureStore from "expo-secure-store";
+import axios from 'axios';
+import { API_URL } from "react-native-dotenv"
 
-export default function Station({ name, state, mac, buildingList, selectedBuilding }) {
+export default function Station({ name, state, mac, buildingList, selectedBuilding, handleUpdateStation }) {
     const navigation = useNavigation();
     const [showModal, setShowModal] = useState(false);
     const [newName, setNewName] = useState("");
@@ -34,14 +37,17 @@ export default function Station({ name, state, mac, buildingList, selectedBuildi
                 'new_name': newName,
                 'mac_address': mac
             }
+        console.log(headers);
+        console.log(data);
             //API_URL=http://176.190.38.210:8000
-            res = await axios.post(`http://176.190.38.210:8000/api/station/update`, data, { headers });
+            res = await axios.post(`${API_URL}/api/station/update`, data, { headers });
             setShowModal(false);
         } catch (e) {
             console.error(e);
             setShowModal(false);
         }
         setIsLoading(false);
+        handleUpdateStation();
 
     }
 
@@ -77,7 +83,7 @@ export default function Station({ name, state, mac, buildingList, selectedBuildi
                     style={styles.option}
                     onPress={() => setShowModal(true)}
                 >
-                    <FontAwesomeIcon icon={faEllipsisVertical} style={{ color: "white" }} />
+                    <FontAwesomeIcon icon={faEllipsisVertical} style={{ color: "white"}} />
                 </Pressable>
             </Pressable>
             <Modal visible={showModal} transparent={true} animationType="fade">
@@ -111,17 +117,13 @@ export default function Station({ name, state, mac, buildingList, selectedBuildi
                         searchPlaceholder="Rechercher..."
                         value={selectedBuilding}
                         onChange={item => {
-                            setNewSelectedBuilding(item);
+                            setNewSelectedBuilding(item.value);
                         }}
                     />
                     <Button
                         title="Envoyer"
                         onPress={handleOption}
                         color={"#226871"}
-                        disabled={
-                            !newName.trim() &&
-                            newSelectedBuilding.value == selectedBuilding.value
-                        }
                     />
                 </View>
             </Modal>
@@ -161,12 +163,16 @@ const styles = StyleSheet.create({
     },
     option: {
         position: "absolute",
-        top: 15,
-        right: 10,
+        paddingTop: 15,
+        right: 5,
+        borderWidth: 0.5,
+        borderRadius: 8,
         alignSelf: "flex-end",
-    }
-    ,
+        height: 80,
+        width: 30,
+        backgroundColor: "black"
 
+    },
     title: {
         fontSize: 24,
         fontWeight: "bold",
