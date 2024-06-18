@@ -9,7 +9,7 @@ import * as SecureStore from "expo-secure-store";
 import axios from 'axios';
 import { API_URL } from "react-native-dotenv"
 
-export default function Station({ name, state, mac, buildingList, selectedBuilding, handleUpdateStation }) {
+export default function Station({ name, state, mac, id, buildingList, selectedBuilding, handleUpdateStation }) {
     const navigation = useNavigation();
     const [showModal, setShowModal] = useState(false);
     const [newName, setNewName] = useState("");
@@ -24,7 +24,6 @@ export default function Station({ name, state, mac, buildingList, selectedBuildi
             console.error("message", error);
             return;
         }
-        id = await SecureStore.getItemAsync("user_id");
         setIsLoading(true);
         try {
             const headers = {
@@ -59,7 +58,7 @@ export default function Station({ name, state, mac, buildingList, selectedBuildi
         <View>
             <Pressable
                 style={styles.container}
-                onPress={() => navigation.navigate("Dashboard", { mac: mac, name: name })}
+                onPress={() => navigation.navigate("Dashboard", { id: id, name: name })}
             >
                 <Text style={styles.text}>
                     {name}

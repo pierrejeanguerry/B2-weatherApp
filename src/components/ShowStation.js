@@ -67,10 +67,11 @@ export default function ShowStation() {
             const headers = {
                 'Connection': 'keep-alive',
                 'Content-Type': 'application/json',
-                "Accept": "application/json",
                 "token_user": userToken
             }
-            res = await axios.get(`${API_URL}/api/stations/${selectedBuilding.value}`, { headers });
+            res = await axios.get(`${API_URL}/api/stations/${selectedBuilding.value}`,
+                { headers: headers });
+            console.log("res.data = ", res.data);
             setStationList(res.data.list_station);
         } catch (e) {
             console.error(e);
@@ -118,6 +119,7 @@ export default function ShowStation() {
                             name={item.name}
                             state={item.state}
                             mac={item.mac}
+                            id={item.id}
                             buildingList={buildingList}
                             selectedBuilding={selectedBuilding}
                             handleUpdateStation={() => handleUpdateStation()}

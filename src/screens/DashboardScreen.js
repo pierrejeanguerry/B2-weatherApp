@@ -40,7 +40,7 @@ const DashboardScreen = ({ route }) => {
                 token_user: userToken,
             };
             const data = {
-                days: 365,
+                days: '365',
             };
             try {
                 res = await axios.get(

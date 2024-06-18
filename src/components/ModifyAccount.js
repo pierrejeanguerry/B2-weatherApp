@@ -31,7 +31,7 @@ export default function ModifyAccount() {
 
         try {
             userToken = await SecureStore.getItemAsync("userToken");
-            is = await SecureStore.getItemAsync("user_id");
+            id = await SecureStore.getItemAsync("user_id");
             try {
                 if (password !== repeatPassword)
                     throw new Error("Les mots de passe ne correspondent pas");

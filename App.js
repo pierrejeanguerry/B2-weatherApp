@@ -126,7 +126,7 @@ export default function App() {
             }
         };
         VerifyTokenAsync();
-    }, []);
+    }, [state.userToken]);
 
     const authContext = useMemo(
         () => ({
@@ -147,14 +147,15 @@ export default function App() {
                         data,
                         { headers }
                     );
+                    console.log(typeof(res.data.id));
                     await Promise.all([
-                        SecureStore.setItemAsync("userToken", res.data.token_user),
-                        SecureStore.setItemAsync("username", res.data.username),
-                        SecureStore.setItemAsync("email", res.data.email),
-                        SecureStore.setItemAsync("user_id", res.data.id),
+                        await SecureStore.setItemAsync("userToken", res.data.token_user),
+                        await SecureStore.setItemAsync("user_id", res.data.id.toString()),
+                        await SecureStore.setItemAsync("username", res.data.username),
                     ]);
                     dispatch({ type: "SIGN_IN", token: res.data.token_user });
                 } catch (error) {
+                    console.error(error);
                     throw new Error("Non valid Ids.");
                 }
             },

@@ -16,7 +16,6 @@ const SelectBuildingScreen = ({ navigation }) => {
             console.error("message", e);
             return;
         }
-        id = await SecureStore.getItemAsync("user_id");
         if (userToken) {
             const headers = {
                 Connection: "keep-alive",
@@ -25,7 +24,7 @@ const SelectBuildingScreen = ({ navigation }) => {
                 token_user: userToken,
             };
             try {
-                res = await axios.get(`${API_URL}/api/buildings/${id}`, {
+                res = await axios.get(`${API_URL}/api/buildings`, {
                     headers,
                 });
 
@@ -65,15 +64,10 @@ const SelectBuildingScreen = ({ navigation }) => {
                 token_user: userToken,
             };
 
-            const data = {
-                building_id: id,
-            };
-
             try {
                 res = await axios.delete(
-                    `${API_URL}/api/buildings`,
+                    `${API_URL}/api/buildings/${id}`,
                     {
-                        data: data,
                         headers: headers
                     }
                 );

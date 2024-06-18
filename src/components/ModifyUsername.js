@@ -22,6 +22,8 @@ export default function ModifyUsername({ onUpdateUsername }) {
         try {
             userToken = await SecureStore.getItemAsync("userToken");
             try {
+                id = await SecureStore.getItemAsync("user_id");
+                console.log("id = ", typeof(id));
                 const headers = {
                     "Content-Type": "application/json",
                     Accept: "application/json",
@@ -30,8 +32,8 @@ export default function ModifyUsername({ onUpdateUsername }) {
                 const data = {
                     username: newUsername,
                 };
-                const res = await axios.post(
-                    `${API_URL}/api/user/username/update`,
+                const res = await axios.patch(
+                    `${API_URL}/api/users/${parseInt(id)}`,
                     data,
                     { headers: headers }
                 );
