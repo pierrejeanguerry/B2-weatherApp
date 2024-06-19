@@ -48,12 +48,13 @@ export default function ModifyAccount() {
                     token_user: userToken,
                 };
                 const data = {
+                    username: null,
                     email: email,
                     password: password,
                     currentPassword: currentPassword,
                 };
                 const res = await axios.patch(
-                    `${API_URL}/api/user/${id}`,
+                    `${API_URL}/api/users/${id}`,
                     data,
                     { headers: headers }
                 );

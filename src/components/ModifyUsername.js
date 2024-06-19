@@ -31,6 +31,8 @@ export default function ModifyUsername({ onUpdateUsername }) {
                 };
                 const data = {
                     username: newUsername,
+                    password: null,
+                    email: null
                 };
                 const res = await axios.patch(
                     `${API_URL}/api/users/${parseInt(id)}`,
